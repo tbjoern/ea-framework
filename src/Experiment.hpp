@@ -7,6 +7,7 @@ namespace eaframework {
 
 class Instance;
 enum class ObjectiveFunctionType;
+enum class InformationCollectorType;
 
 struct MutationOperatorParameter {
     std::string name;
@@ -37,6 +38,7 @@ struct ExperimentConfig {
     unsigned long long computation_time_budget;
     bool use_predefined_start;
     ObjectiveFunctionType objective_function_type;
+    InformationCollectorType information_collector_type;
     int generation_count;
 };
 
