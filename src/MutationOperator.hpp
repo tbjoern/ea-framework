@@ -5,7 +5,7 @@ namespace eaframework {
 
 class MutationOperator {
 public:
-    virtual Individual mutate(Individual) = 0;
+    virtual Individual mutate(Individual&) = 0;
 };
 
 }

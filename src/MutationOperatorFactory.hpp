@@ -3,10 +3,10 @@
 #include <string>
 #include <vector>
 
-class MutationOperator;
 
 namespace eaframework {
 
+class MutationOperator;
 class ObjectiveFunction;
 class MutationOperatorConfig;
 
@@ -15,6 +15,8 @@ class MutationOperatorConfig;
 class MutationOperatorFactory {
     std::shared_ptr<ObjectiveFunction> objective_function;
 public:
+    MutationOperatorFactory(std::shared_ptr<ObjectiveFunction>& _objective_function) : objective_function(_objective_function) {}
+
     std::shared_ptr<MutationOperator> build(const MutationOperatorConfig&);
 };
 

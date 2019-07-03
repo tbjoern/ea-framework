@@ -5,6 +5,7 @@ set(SOURCES
     Graph.cpp
     InformationCollector.cpp
     Instance.cpp
+    MutationOperatorFactory.cpp
     main.cpp
     ObjectiveFunction.cpp
     Runner.cpp
