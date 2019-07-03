@@ -5,10 +5,8 @@
 namespace eaframework {
 
 struct Run;
-enum class InformationCollectorType;
+class ExperimentConfig;
 
-void run_experiment(std::string experiment_config_path, std::string instance_name);
-
-void execute_runs(std::vector<Run>& runs, InformationCollectorType);
+void execute_runs(std::string experiment_config_path, std::string instance_name);
 
 }

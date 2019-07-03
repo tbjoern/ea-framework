@@ -4,30 +4,24 @@
 #include <memory>
 #include <Instance.hpp>
 #include <Experiment.hpp>
+#include <InformationCollector.hpp>
+#include <ObjectiveFunction.hpp>
 
 namespace eaframework {
 
-void run_experiment(std::string experiment_config_path, std::string instance_name) {
-    auto config_output = read_experiment_configuration(experiment_config_path);
-    auto experiment_config = std::get<0>(config_output);
-    auto mutation_operator_configs = std::get<1>(config_output);
-    auto instance = std::make_shared<Instance>(read_instance(instance_name));
+void execute_runs(std::string experiment_config_path, std::string instance_name) {
+    auto experiment_config = read_experiment_configuration(experiment_config_path);
+    auto instance = read_instance(instance_name);
 
-    // generate Run configurations
+    auto information_collector = build_information_collector(experiment_config.information_collector_type);
+    auto objective_function = build_objective_function(experiment_config.objective_function_type, instance);
 
-    std::vector<Run> runs;
-    for(auto mutation_operator_config : mutation_operator_configs) {
-        for(int i = 0; i < experiment_config->run_count; ++i) {
-            Run run {instance, experiment_config, mutation_operator_config};
-            runs.push_back(run);
+#pragma omp parallel for collapse(2)
+    for(const auto& mutation_operator_config : experiment_config.mutation_operator_configs) {
+        for(int i = 0; i < experiment_config.run_count; ++i) {
+            
         }
     }
-
-    execute_runs(runs, experiment_config->information_collector_type);
-}
-
-void execute_runs(std::vector<Run>& runs, InformationCollectorType) {
-
 }
 
 }
