@@ -2,9 +2,9 @@
 #include <vector>
 #include <string>
 
-class Graph;
-
 namespace eaframework {
+
+class Graph;
 
 typedef std::vector<unsigned short> Individual;
 

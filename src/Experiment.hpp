@@ -27,11 +27,6 @@ struct MutationOperatorConfig {
     std::vector<MutationOperatorParameter> parameters;
 };
 
-struct Run {
-    std::shared_ptr<Instance> instance;
-    std::shared_ptr<ExperimentConfig> experiment_config;
-    std::shared_ptr<MutationOperatorConfig> mutation_operator_config;
-};
 
 struct ExperimentConfig {
     int run_count;
@@ -40,6 +35,12 @@ struct ExperimentConfig {
     ObjectiveFunctionType objective_function_type;
     InformationCollectorType information_collector_type;
     int generation_count;
+};
+
+struct Run {
+    std::shared_ptr<Instance> instance;
+    std::shared_ptr<ExperimentConfig> experiment_config;
+    std::shared_ptr<MutationOperatorConfig> mutation_operator_config;
 };
 
 std::tuple<std::shared_ptr<ExperimentConfig>, std::vector<std::shared_ptr<MutationOperatorConfig>>> read_experiment_configuration(std::string);
