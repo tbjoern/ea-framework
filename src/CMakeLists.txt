@@ -3,8 +3,10 @@ find_package(OpenMP)
 set(SOURCES
     Experiment.cpp
     Graph.cpp
+    InformationCollector.cpp
     Instance.cpp
     main.cpp
+    ObjectiveFunction.cpp
     Runner.cpp
 )
 

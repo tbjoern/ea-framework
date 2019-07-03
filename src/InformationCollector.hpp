@@ -17,6 +17,6 @@ public:
 
 // we only need one information collector, but we want to make use of polymorphism
 // thus we provide a factory method
-std::shared_ptr<InformationCollector> make_information_collector(InformationCollectorType);
+std::shared_ptr<InformationCollector> build_information_collector(InformationCollectorType);
 
 }
