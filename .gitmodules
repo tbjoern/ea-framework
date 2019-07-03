@@ -1,6 +1,3 @@
-[submodule "extern/inih"]
-	path = extern/inih
-	url = ../../jtilly/inih.git
 [submodule "extern/cxxopts"]
 	path = extern/cxxopts
 	url = ../../jarro2783/cxxopts
