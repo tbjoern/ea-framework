@@ -1,4 +1,4 @@
 add_subdirectory(cxxopts)
 
-add_library(inih INTERFACE)
-target_include_directories(inih INTERFACE inih)
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+add_subdirectory(json)

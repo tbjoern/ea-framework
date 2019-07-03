@@ -1,3 +1,6 @@
 [submodule "extern/cxxopts"]
 	path = extern/cxxopts
 	url = ../../jarro2783/cxxopts
+[submodule "extern/json"]
+	path = extern/json
+	url = ../../nlohmann/json
