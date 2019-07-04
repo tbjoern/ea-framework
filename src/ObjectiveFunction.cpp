@@ -6,7 +6,7 @@ class DummyFunction : public ObjectiveFunction {
 public:
     DummyFunction(const Instance& p_instance) : ObjectiveFunction(p_instance) {}
 
-    double operator()(Individual) override {
+    double operator()(Individual& individual) override {
         return 0.0;
     }
 };

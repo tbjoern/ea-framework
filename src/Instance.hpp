@@ -6,7 +6,7 @@ namespace eaframework {
 
 class Graph;
 
-typedef std::vector<unsigned short> Individual;
+struct Individual;
 
 struct Instance {
     std::shared_ptr<const Graph> graph;

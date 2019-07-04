@@ -1,13 +1,15 @@
 #include "MutationOperatorFactory.hpp"
 
 #include <MutationOperator.hpp>
+#include <Individual.hpp>
 
 namespace eaframework {
 
 class DummyOperator : public MutationOperator {
 public:
-    Individual mutate(Individual& parent) override {
-        return parent;
+    std::shared_ptr<Individual> mutate(Individual& parent) override {
+        auto copy = Individual(parent);
+        return std::make_shared<Individual>(copy);
     }
 };
 

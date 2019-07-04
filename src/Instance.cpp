@@ -1,6 +1,7 @@
 #include "Instance.hpp"
 
 #include <Graph.hpp>
+#include <Individual.hpp>
 
 namespace eaframework {
 

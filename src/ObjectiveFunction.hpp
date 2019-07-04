@@ -1,17 +1,17 @@
 #include <vector>
 #include <memory>
-#include <typedefs.hpp>
 
 namespace eaframework {
 
 class Instance;
+struct Individual;
 
 class ObjectiveFunction {
 protected:
     const Instance& instance;
     ObjectiveFunction(const Instance& _instance) : instance(_instance) {}
 public:
-    virtual double operator()(Individual) = 0;
+    virtual double operator()(Individual&) = 0;
 };
 
 enum class ObjectiveFunctionType {

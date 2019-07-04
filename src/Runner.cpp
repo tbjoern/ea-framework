@@ -2,11 +2,13 @@
 
 #include <tuple>
 #include <memory>
+#include <iostream>
 #include <Instance.hpp>
 #include <Experiment.hpp>
 #include <InformationCollector.hpp>
 #include <ObjectiveFunction.hpp>
 #include <MutationOperatorFactory.hpp>
+#include <EA.hpp>
 
 namespace eaframework {
 
@@ -22,8 +24,16 @@ void execute_runs(std::string experiment_config_path, std::string instance_name)
     for(const auto& mutation_operator_config : experiment_config.mutation_operator_configs) {
         for(int i = 0; i < experiment_config.run_count; ++i) {
             auto mutation_operator = mutation_operator_factory.build(mutation_operator_config);
+            auto ea = EA(objective_function, mutation_operator);
+            ea.make_initial_individual(instance);
+            for(int generation = 0; generation < experiment_config.generation_count; ++generation) {
+                ea.next_generation();
+                // information_collector->generation_snapshot(ea);
+            }
         }
     }
+
+    // information_collector->output_to_stream(std::cout);
 }
 
 }

@@ -1,24 +1,27 @@
 #include <vector>
 #include <memory>
-#include <typedefs.hpp>
-
-class MutationOperator;
-class ObjectiveFunction;
 
 namespace eaframework {
 
+class MutationOperator;
+class ObjectiveFunction;
+struct Individual;
+class Instance;
+
 class EA {
 private:
-    Individual parent;
-    Individual previous_parent;
-    std::unique_ptr<MutationOperator> mutator;
+    std::shared_ptr<const Individual> parent;
+    std::shared_ptr<const Individual> previous_parent;
+    std::shared_ptr<MutationOperator> mutator;
     std::shared_ptr<const ObjectiveFunction> objective_function;
     bool generation_improved;
 
 public:
     const MutationOperator& getMutator() const;
     
-    EA(std::shared_ptr<ObjectiveFunction>, MutationOperator&&);
+    EA(std::shared_ptr<ObjectiveFunction>, std::shared_ptr<MutationOperator>);
+
+    void make_initial_individual(Instance&);
 
     void next_generation();
 

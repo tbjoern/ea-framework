@@ -1,6 +1,7 @@
 find_package(OpenMP)
 
 set(SOURCES
+    EA.cpp
     Experiment.cpp
     Graph.cpp
     InformationCollector.cpp
@@ -21,7 +22,6 @@ set(HEADERS
     MutationOperatorFactory.hpp
     ObjectiveFunction.hpp
     Runner.hpp
-    typedefs.hpp
 )
 
 set(libraries

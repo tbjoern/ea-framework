@@ -1,11 +1,13 @@
 #include <vector>
-#include <typedefs.hpp>
 
 namespace eaframework {
 
+struct Individual;
+
 class MutationOperator {
 public:
-    virtual Individual mutate(Individual&) = 0;
+    virtual void setup_initial_individual(Individual&) {}
+    virtual std::shared_ptr<Individual> mutate(Individual&) = 0;
 };
 
 }
