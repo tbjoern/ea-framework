@@ -15,6 +15,7 @@ private:
     std::shared_ptr<MutationOperator> mutator;
     std::shared_ptr<const ObjectiveFunction> objective_function;
     bool generation_improved;
+    double mutation_time;
 
 public:
     const MutationOperator& getMutator() const;
@@ -27,6 +28,7 @@ public:
 
     const Individual& getBestIndividual() const;
     const Individual& getPreviousIndividual() const;
+    double getMutationTime() const;
 };
 
 }

@@ -11,7 +11,7 @@ protected:
     const Instance& instance;
     ObjectiveFunction(const Instance& _instance) : instance(_instance) {}
 public:
-    virtual double operator()(Individual&) = 0;
+    virtual double evaluate(const Individual&) const = 0;
 };
 
 enum class ObjectiveFunctionType {

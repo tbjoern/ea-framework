@@ -7,7 +7,7 @@ namespace eaframework {
 
 class DummyOperator : public MutationOperator {
 public:
-    std::shared_ptr<Individual> mutate(Individual& parent) override {
+    std::shared_ptr<Individual> mutate(const Individual& parent) override {
         auto copy = Individual(parent);
         return std::make_shared<Individual>(copy);
     }

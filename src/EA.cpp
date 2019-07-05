@@ -4,6 +4,7 @@
 #include <Instance.hpp>
 #include <MutationOperator.hpp>
 #include <Individual.hpp>
+#include <chrono>
 
 namespace eaframework {
 
@@ -36,7 +37,15 @@ void EA::make_initial_individual(Instance& instance) {
 EA::EA(std::shared_ptr<ObjectiveFunction> _objective_function, std::shared_ptr<MutationOperator> _mutator) : parent(nullptr), previous_parent(nullptr), mutator(_mutator), objective_function(_objective_function), generation_improved(false) {}
 
 void EA::next_generation() {
-    // TODO implement
+    auto start_time = std::chrono::high_resolution_clock::now();
+    auto offspring = mutator->mutate(*parent);
+    auto stop_time = std::chrono::high_resolution_clock::now();
+    mutation_time = (stop_time - start_time).count();
+
+    previous_parent = parent;
+    if(objective_function->evaluate(*parent) < objective_function->evaluate(*offspring)) {
+        parent = offspring;
+    }
 }
 
 const Individual& EA::getBestIndividual() const {
