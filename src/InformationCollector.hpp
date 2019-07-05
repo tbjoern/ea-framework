@@ -1,5 +1,7 @@
 #include <memory>
 #include <iostream>
+#include <unordered_map>
+#include <string>
 
 namespace eaframework {
 
@@ -7,6 +9,7 @@ class EA;
 enum class InformationCollectorType {
     DEFAULT
 };
+
 
 class InformationCollector {
 public:

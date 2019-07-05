@@ -9,6 +9,10 @@ class MutationOperator;
 class ObjectiveFunction;
 class MutationOperatorConfig;
 
+enum class MutationOperatorType {
+    DEFAULT
+};
+
 // we need multiple mutation operators with the same objective function
 // thus this needs to be a class
 class MutationOperatorFactory {

@@ -8,22 +8,21 @@ namespace eaframework {
 class Instance;
 enum class ObjectiveFunctionType;
 enum class InformationCollectorType;
+enum class MutationOperatorType;
 
 struct MutationOperatorParameter {
     std::string name;
-    union value {
+    union ParamType {
         int i;
         double d;
         bool b;
     };
-};
-
-enum class MutationOperatorType {
-    DEFAULT
+    ParamType value;
 };
 
 struct MutationOperatorConfig {
     MutationOperatorType type;
+    uint id;
     std::vector<MutationOperatorParameter> parameters;
 };
 

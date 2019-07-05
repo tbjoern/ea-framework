@@ -1,5 +1,7 @@
 #include <vector>
 #include <memory>
+#include <string>
+#include <unordered_map>
 
 namespace eaframework {
 
@@ -18,6 +20,7 @@ enum class ObjectiveFunctionType {
     MAXCUT,
     MAXDICUT
 };
+
 
 // same paradigm as with InformationCollector factory
 std::shared_ptr<ObjectiveFunction> build_objective_function(ObjectiveFunctionType, const Instance&);
