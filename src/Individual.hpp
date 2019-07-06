@@ -4,6 +4,11 @@
 
 namespace eaframework {
 
+enum {
+    BIT_ONE = 1,
+    BIT_ZERO = 0
+};
+
 struct Individual {
     std::vector<unsigned int> bit_vector;
 
