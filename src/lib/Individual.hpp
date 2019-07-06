@@ -10,7 +10,7 @@ enum {
 };
 
 struct Individual {
-    std::vector<unsigned int> bit_vector;
+    std::vector<unsigned short> bit_vector;
 
     std::unordered_map<std::string, std::vector<double>> data_vectors;
 

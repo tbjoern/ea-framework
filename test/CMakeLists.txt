@@ -1,6 +1,7 @@
 set(SOURCES
     main.cpp
     GraphTest.cpp
+    InstanceTest.cpp
 )
 
 set(HEADERS
