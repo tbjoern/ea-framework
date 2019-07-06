@@ -21,6 +21,8 @@ public:
 
     bool addEdge(int start, int end, int weight);
     bool addEdge(int start, int end);
+    bool updateEdge(int start, int end, int weight);
+    bool edgeExists(int start, int end);
     const Edgelist getOutEdges(int node);
     const Edgelist getInEdges(int node);
 };

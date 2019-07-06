@@ -3,6 +3,8 @@
 #include <fstream>
 #include <unordered_map>
 #include <set>
+#include <exception>
+#include <sstream>
 
 namespace {
 
@@ -194,16 +196,52 @@ namespace eaframework {
 
 
 bool Graph::addEdge(int start, int end, int weight) {
-
+  if(edgeExists(start, end)) {
+    return false;
+  }
+  out_edges[start].push_back({end, weight});
+  in_edges[end].push_back({start, weight});
+  return true;
 }
+
 bool Graph::addEdge(int start, int end) {
-
+  addEdge(start, end, 1);
 }
-const Edgelist Graph::getOutEdges(int node) {
+bool Graph::updateEdge(int start, int end, int weight) {
+  if(!edgeExists(start, end)) {
+    std::stringstream msg;
+    msg << "Cannot update edge, it does not exist: " << start << "-" << end << std::endl;
+    throw std::invalid_argument(msg.str());
+  }
 
+  for(auto& edge : in_edges[end]) {
+    if(edge.end == start) {
+      edge.weight = weight;
+      break;
+    }
+  }
+  
+  for(auto& edge : out_edges[start]) {
+    if(edge.end == end) {
+      edge.weight = weight;
+      break;
+    }
+  }
+}
+
+bool Graph::edgeExists(int start, int end) {
+  for(auto& edge : out_edges[start]) {
+    if(edge.end == end) {
+      return true;
+    }
+  }
+}
+
+const Edgelist Graph::getOutEdges(int node) {
+  return out_edges[node];
 }
 const Edgelist Graph::getInEdges(int node) {
-    
+  return in_edges[node];
 }
 
 std::shared_ptr<Graph> read_graph(std::string filename) {
