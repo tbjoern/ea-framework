@@ -12,10 +12,13 @@ struct Edge {
 typedef std::vector<Edge> Edgelist;
 
 class Graph {
-    Edgelist in_edges;
-    Edgelist out_edges;
+    std::vector<Edgelist> in_edges;
+    std::vector<Edgelist> out_edges;
 
 public:
+    Graph() {}
+    Graph(int node_count) : in_edges(node_count), out_edges(node_count) {}
+
     bool addEdge(int start, int end, int weight);
     bool addEdge(int start, int end);
     const Edgelist getOutEdges(int node);
