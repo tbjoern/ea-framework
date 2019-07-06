@@ -56,7 +56,8 @@ ExperimentConfig read_experiment_configuration(std::string path) {
         cfg.type = mutation_operator_type_from_string[mutation_operator_type_string];
         cfg.id = get_value(mutator, "id", 0);
         if (mutator.find("arguments") != mutator.end()) {
-            for (json::iterator it = mutator.begin(); it != mutator.end(); ++it) {
+            auto arguments = mutator["arguments"];
+            for (json::iterator it = arguments.begin(); it != arguments.end(); ++it) {
                 auto param = MutationOperatorParameter{};
                 param.name = it.key();
                 param.value.d = it.value();
