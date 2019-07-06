@@ -4,3 +4,6 @@ add_subdirectory(cxxopts)
 
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 add_subdirectory(json)
+
+set(INSTALL_GTEST OFF)
+add_subdirectory(googletest)
