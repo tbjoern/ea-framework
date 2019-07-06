@@ -1,6 +1,5 @@
 #include <string>
 #include <cxxopts.hpp>
-#include <nlohmann/json.hpp>
 #include <Runner.hpp>
 
 int main(int argc, char* argv[]) {

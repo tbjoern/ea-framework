@@ -7,7 +7,6 @@ set(SOURCES
     InformationCollector.cpp
     Instance.cpp
     MutationOperatorFactory.cpp
-    main.cpp
     ObjectiveFunction.cpp
     Runner.cpp
 )
@@ -25,7 +24,6 @@ set(HEADERS
 )
 
 set(libraries
-    cxxopts
     nlohmann_json::nlohmann_json
 )
 
@@ -33,6 +31,6 @@ if(OpenMP_CXX_FOUND)
     set(libraries ${libraries} OpenMP::OpenMP_CXX)
 endif(OpenMP_CXX_FOUND)
 
-add_executable(eaframework ${HEADERS} ${SOURCES})
-target_include_directories(eaframework PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(eaframework PRIVATE ${libraries})
+add_library(eaframework-lib STATIC ${HEADERS} ${SOURCES})
+target_include_directories(eaframework-lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(eaframework-lib PRIVATE ${libraries})
