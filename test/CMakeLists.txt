@@ -1,5 +1,6 @@
 set(SOURCES
     main.cpp
+    GraphTest.cpp
 )
 
 set(HEADERS
@@ -7,7 +8,9 @@ set(HEADERS
 )
 
 set(libraries
+    gtest
     gtest_main
+    eaframework-lib
 )
 
 add_executable(tests ${HEADERS} ${SOURCES})
