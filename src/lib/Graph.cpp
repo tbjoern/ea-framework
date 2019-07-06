@@ -246,9 +246,13 @@ const Edgelist Graph::getInEdges(int node) {
 
 std::shared_ptr<Graph> read_graph(std::string filename) {
     auto graph = ::read_graph(filename);
-    auto graph_ptr = std::make_shared<Graph>();
+    auto graph_ptr = std::make_shared<Graph>(std::move(graph));
 
     return graph_ptr;
+}
+
+int Graph::node_count() const {
+  return in_edges.size();
 }
 
 }

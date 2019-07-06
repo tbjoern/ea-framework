@@ -25,6 +25,7 @@ public:
     bool edgeExists(int start, int end);
     const Edgelist getOutEdges(int node);
     const Edgelist getInEdges(int node);
+    int node_count() const;
 };
 
 std::shared_ptr<Graph> read_graph(std::string filename);
