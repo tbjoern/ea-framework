@@ -29,15 +29,18 @@ TEST(GraphTest, UpdateEdge) {
 }
 
 TEST(GraphTest, ReadsGraphFromFile) {
-    auto graph = read_graph("data/test.edgelist");
+    auto graph = read_graph("data/test.txt");
 
     ASSERT_EQ(graph->node_count(), 4);
-    EXPECT_TRUE(graph->edgeExists(0,1));
+
+    ASSERT_TRUE(graph->edgeExists(0,1));
+    EXPECT_EQ(graph->getOutEdges(0).front().weight, 1);
+    
+    ASSERT_TRUE(graph->edgeExists(1,2));
+    EXPECT_EQ(graph->getOutEdges(1).front().weight, 3);
+
     EXPECT_TRUE(graph->edgeExists(0,2));
     EXPECT_TRUE(graph->edgeExists(0,3));
-    EXPECT_TRUE(graph->edgeExists(1,2));
-    EXPECT_EQ(graph->getOutEdges(0).front().weight, 1);
-    EXPECT_EQ(graph->getOutEdges(1).front().weight, 3);
 }
 
 }

@@ -5,6 +5,7 @@
 #include <set>
 #include <exception>
 #include <sstream>
+#include <iostream>
 
 namespace {
 
