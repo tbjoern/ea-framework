@@ -4,3 +4,6 @@
 [submodule "extern/json"]
 	path = extern/json
 	url = ../../nlohmann/json
+[submodule "extern/googletest"]
+	path = extern/googletest
+	url = ../../google/googletest.git
