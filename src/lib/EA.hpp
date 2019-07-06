@@ -28,6 +28,7 @@ public:
 
     const Individual& getBestIndividual() const;
     const Individual& getPreviousIndividual() const;
+    const ObjectiveFunction& getObjectiveFunction() const;
     double getMutationTime() const;
 };
 
