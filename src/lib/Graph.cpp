@@ -1,5 +1,7 @@
 #include "Graph.hpp"
 
+#include <helpers.hpp>
+
 #include <fstream>
 #include <unordered_map>
 #include <set>
@@ -17,10 +19,6 @@ static std::unordered_map<std::string, FileExtension> filename_map = {
     {".mtx", MTXREADER},   {".rud", EDGELIST},  {".mc", EDGELIST},
     {".txt", EDGELIST},    {".cnf", CNFREADER}, {".edgelist", NXEDGELIST},
     {".edges", NXEDGELIST}};
-
-std::string get_extension(std::string filename) {
-    return filename.substr(filename.rfind('.'));
-}
 
 class FileReader {
 public:
@@ -200,8 +198,10 @@ bool Graph::addEdge(int start, int end, int weight) {
   if(edgeExists(start, end)) {
     return false;
   }
-  out_edges[start].push_back({end, weight});
-  in_edges[end].push_back({start, weight});
+  edges.push_back({start, end, weight});
+  Edge* e_ptr = &(edges.back());
+  out_edges[start].push_back(e_ptr);
+  in_edges[end].push_back(e_ptr);
   return true;
 }
 
@@ -215,33 +215,30 @@ bool Graph::updateEdge(int start, int end, int weight) {
     throw std::invalid_argument(msg.str());
   }
 
-  for(auto& edge : in_edges[end]) {
-    if(edge.end == start) {
-      edge.weight = weight;
-      break;
-    }
-  }
-  
-  for(auto& edge : out_edges[start]) {
-    if(edge.end == end) {
-      edge.weight = weight;
-      break;
-    }
-  }
-}
-
-bool Graph::edgeExists(int start, int end) {
-  for(auto& edge : out_edges[start]) {
-    if(edge.end == end) {
+  for(auto edge : out_edges[start]) {
+    auto& e_ref = *edge;
+    if(e_ref.end == end) {
+      e_ref.weight = weight;
       return true;
     }
   }
+  return false;
 }
 
-const Edgelist Graph::getOutEdges(int node) {
+bool Graph::edgeExists(int start, int end) {
+  for(auto edge : out_edges[start]) {
+    auto& e_ref = *edge;
+    if(e_ref.end == end) {
+      return true;
+    }
+  }
+  return false;
+}
+
+const Edgepointers Graph::getOutEdges(int node) const {
   return out_edges[node];
 }
-const Edgelist Graph::getInEdges(int node) {
+const Edgepointers Graph::getInEdges(int node) const {
   return in_edges[node];
 }
 

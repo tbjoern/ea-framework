@@ -5,7 +5,7 @@ using namespace eaframework;
 
 namespace {
 
-TEST(GraphTest, AddEdge) {
+TEST(Graph, AddEdge) {
     Graph g{2};
     auto success = g.addEdge(0, 1, 2);
 
@@ -15,29 +15,29 @@ TEST(GraphTest, AddEdge) {
     EXPECT_EQ(g.getInEdges(1).size(), 1);
     EXPECT_EQ(g.getOutEdges(1).size(), 0);
     EXPECT_EQ(g.getInEdges(0).size(), 0);
-    EXPECT_EQ(g.getOutEdges(0).front().weight, 2);
+    EXPECT_EQ(g.getOutEdges(0).front()->weight, 2);
 }
 
-TEST(GraphTest, UpdateEdge) {
+TEST(Graph, UpdateEdge) {
     Graph g{2};
     g.addEdge(0,1,1);
     auto success = g.updateEdge(0,1,10);
 
     ASSERT_TRUE(success);
-    EXPECT_EQ(g.getOutEdges(0).front().weight, 10);
-    EXPECT_EQ(g.getInEdges(1).front().weight, 10);
+    EXPECT_EQ(g.getOutEdges(0).front()->weight, 10);
+    EXPECT_EQ(g.getInEdges(1).front()->weight, 10);
 }
 
-TEST(GraphTest, ReadsGraphFromFile) {
+TEST(Graph, ReadsGraphFromFile) {
     auto graph = read_graph("data/test.txt");
 
     ASSERT_EQ(graph->node_count(), 4);
 
     ASSERT_TRUE(graph->edgeExists(0,1));
-    EXPECT_EQ(graph->getOutEdges(0).front().weight, 1);
+    EXPECT_EQ(graph->getOutEdges(0).front()->weight, 1);
     
     ASSERT_TRUE(graph->edgeExists(1,2));
-    EXPECT_EQ(graph->getOutEdges(1).front().weight, 3);
+    EXPECT_EQ(graph->getOutEdges(1).front()->weight, 3);
 
     EXPECT_TRUE(graph->edgeExists(0,2));
     EXPECT_TRUE(graph->edgeExists(0,3));

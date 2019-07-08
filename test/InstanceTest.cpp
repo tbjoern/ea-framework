@@ -6,7 +6,7 @@ using namespace eaframework;
 
 namespace {
 
-TEST(InstanceTest, ReadsStartAssignmentFromFile) {
+TEST(Instance, ReadsStartAssignmentFromFile) {
     auto assignment = read_start_assignment("data/test.assignment");
 
     Individual expected;
