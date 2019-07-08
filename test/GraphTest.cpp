@@ -5,6 +5,15 @@ using namespace eaframework;
 
 namespace {
 
+void validate_graph(std::shared_ptr<Graph> graph) {
+    ASSERT_EQ(graph->node_count(), 4);
+
+    EXPECT_TRUE(graph->edgeExists(0,1));
+    EXPECT_TRUE(graph->edgeExists(1,2));
+    EXPECT_TRUE(graph->edgeExists(0,2));
+    EXPECT_TRUE(graph->edgeExists(0,3));
+}
+
 TEST(Graph, AddEdge) {
     Graph g{2, 1};
     auto success = g.addEdge(0, 1, 2);
@@ -28,19 +37,22 @@ TEST(Graph, UpdateEdge) {
     EXPECT_EQ(g.getInEdges(1).front()->weight, 10);
 }
 
-TEST(Graph, ReadsGraphFromFile) {
+TEST(Graph, ReadsEdgelist) {
     auto graph = read_graph("data/test.txt");
+    validate_graph(graph);
 
-    ASSERT_EQ(graph->node_count(), 4);
-
-    ASSERT_TRUE(graph->edgeExists(0,1));
     EXPECT_EQ(graph->getOutEdges(0).front()->weight, 1);
-    
-    ASSERT_TRUE(graph->edgeExists(1,2));
     EXPECT_EQ(graph->getOutEdges(1).front()->weight, 3);
+}
 
-    EXPECT_TRUE(graph->edgeExists(0,2));
-    EXPECT_TRUE(graph->edgeExists(0,3));
+TEST(Graph, ReadsMTX) {
+    auto graph = read_graph("data/test.mtx");
+    validate_graph(graph);
+}
+
+TEST(Graph, ReadsNXEdgelist) {
+    auto graph = read_graph("data/test.edgelist");
+    validate_graph(graph);
 }
 
 }

@@ -73,12 +73,13 @@ public:
     input_file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     int nodes, edges;
     input_file >> nodes >> nodes >> edges;
-    ++nodes; // indices start at 1
     Graph adj_list{nodes, edges};
 
     for (uint i = 0; i < edges; ++i) {
       int source, dest;
       input_file >> source >> dest;
+      // indices start at 1
+      --source; --dest;
       adj_list.addEdge(source, dest, 1);
     }
     return adj_list;
