@@ -1,0 +1,17 @@
+{
+    "generation_count": 100,
+    "generation_time_budget": 1,
+    "information_collector_type": "default",
+    "run_count": 1,
+    "objective_function": "MAXCUT",
+    "use_predefined_start": true,
+    "mutators": [
+        {
+            "type": "default",
+            "id": 0,
+            "arguments": {
+            
+            }
+        }
+    ]
+}

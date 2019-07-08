@@ -1,5 +1,6 @@
 set(SOURCES
     main.cpp
+    ExperimentTest.cpp
     GraphTest.cpp
     InstanceTest.cpp
     ObjectiveFunctionTest.cpp
