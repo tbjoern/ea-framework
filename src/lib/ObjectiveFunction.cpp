@@ -14,6 +14,10 @@ int ObjectiveFunction::callCount() const {
     return call_count;
 }
 
+int ObjectiveFunction::bitVectorSize() const {
+    return instance.graph->node_count();
+}
+
 class TestFunction : public ObjectiveFunction {
 public:
     TestFunction(const Instance& p_instance) : ObjectiveFunction(p_instance) {}

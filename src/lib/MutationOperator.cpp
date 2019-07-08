@@ -1,6 +1,5 @@
-#include "MutationOperatorFactory.hpp"
+#include "MutationOperator.hpp"
 
-#include <MutationOperator.hpp>
 #include <Individual.hpp>
 #include <random>
 #include <Experiment.hpp>
@@ -26,7 +25,7 @@ public:
     }
 };
 
-std::shared_ptr<MutationOperator> MutationOperatorFactory::build(const MutationOperatorConfig& config) {
+std::shared_ptr<MutationOperator> build_mutation_operator(const MutationOperatorConfig& config) {
     return std::make_shared<DummyOperator>(config.id);
 }
 

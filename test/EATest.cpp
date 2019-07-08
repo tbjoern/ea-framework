@@ -3,7 +3,6 @@
 #include <Instance.hpp>
 #include <ObjectiveFunction.hpp>
 #include <MutationOperator.hpp>
-#include <MutationOperatorFactory.hpp>
 #include <Experiment.hpp>
 #include <Individual.hpp>
 #include <memory>
@@ -21,11 +20,10 @@ public:
     EATest() {
         instance = read_instance("data/EATest/test.txt");
         maxcut = build_objective_function(ObjectiveFunctionType::MAXCUT, instance);
-        auto factory = MutationOperatorFactory(maxcut);
         auto config = MutationOperatorConfig{};
         config.id = 0;
         config.type = MutationOperatorType::DEFAULT;
-        mutation_operator = factory.build(config);
+        mutation_operator = build_mutation_operator(config);
     }
 };
 

@@ -4,7 +4,7 @@
 #include <nlohmann/json.hpp>
 #include <InformationCollector.hpp>
 #include <ObjectiveFunction.hpp>
-#include <MutationOperatorFactory.hpp>
+#include <MutationOperator.hpp>
 
 using json = nlohmann::json;
 

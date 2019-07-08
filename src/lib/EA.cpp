@@ -34,7 +34,9 @@ void EA::make_initial_individual(Instance& instance) {
     best_individual = std::make_shared<Individual>(std::move(start_assignment_copy));
 }
 
-EA::EA(std::shared_ptr<ObjectiveFunction> _objective_function, std::shared_ptr<MutationOperator> _mutator) : best_individual(nullptr), offspring(nullptr), mutator(_mutator), objective_function(_objective_function), generation_improved(false) {}
+EA::EA(std::shared_ptr<ObjectiveFunction> _objective_function, std::shared_ptr<MutationOperator> _mutator) : best_individual(nullptr), offspring(nullptr), mutator(_mutator), objective_function(_objective_function), generation_improved(false) {
+    _mutator->setEA(this);
+}
 
 void EA::next_generation() {
     auto start_time = std::chrono::high_resolution_clock::now();

@@ -5,7 +5,7 @@
 
 namespace eaframework {
 
-class Instance;
+struct Instance;
 struct Individual;
 
 class ObjectiveFunction {
@@ -18,6 +18,7 @@ protected:
 public:
     double evaluate(const Individual&);
     int callCount() const;
+    int bitVectorSize() const;
 };
 
 enum class ObjectiveFunctionType {
@@ -26,8 +27,6 @@ enum class ObjectiveFunctionType {
     MAXDICUT
 };
 
-
-// same paradigm as with InformationCollector factory
-std::shared_ptr<ObjectiveFunction> build_objective_function(ObjectiveFunctionType, const Instance&);
+std::shared_ptr<ObjectiveFunction> build_objective_function(ObjectiveFunctionType type, const Instance& instance);
 
 }
