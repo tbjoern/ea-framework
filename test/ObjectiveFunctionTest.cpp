@@ -22,7 +22,7 @@ protected:
         g.addEdge(0,5);
 
         Individual start_assignment;
-        start_assignment.bit_vector = std::vector<unsigned short>{1, 0, 0, 0, 0, 1};
+        start_assignment.bit_vector = std::vector<unsigned short>{BIT_ONE, BIT_ZERO, BIT_ZERO, BIT_ZERO, BIT_ZERO, BIT_ONE};
 
         instance = Instance{std::make_shared<Graph>(std::move(g)), std::make_shared<Individual>(std::move(start_assignment))};
     }
@@ -34,6 +34,14 @@ TEST_F(ObjectiveFunctionTest, MaxcutEvaluatesCorrectly) {
     double cut_size = maxcut->evaluate(*(instance.start_assignment));
 
     ASSERT_EQ(cut_size, 3);
+}
+
+TEST_F(ObjectiveFunctionTest, MaxdicutEvaluatesCorrectly) {
+    auto maxdicut = build_objective_function(ObjectiveFunctionType::MAXDICUT, instance);
+
+    double cut_size = maxdicut->evaluate(*(instance.start_assignment));
+
+    ASSERT_EQ(cut_size, 2);
 }
 
 }

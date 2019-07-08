@@ -31,12 +31,35 @@ public:
     }
 };
 
+class Maxdicut : public ObjectiveFunction {
+public:
+    Maxdicut(const Instance& p_instance) : ObjectiveFunction(p_instance) {}
+
+    double evaluate(const Individual& individual) const override {
+        double cut_size = 0.0;
+        const auto& bit_vector = individual.bit_vector;
+        for(int node = 0; node < bit_vector.size(); ++node) {
+            if(bit_vector[node] == BIT_ONE) {
+                for(auto edge_ptr : instance.graph->getOutEdges(node)) {
+                    if(bit_vector[edge_ptr->end] == BIT_ZERO) {
+                        cut_size += edge_ptr->weight;
+                    }
+                }
+            }
+        }
+        return cut_size;
+    }
+};
+
 std::shared_ptr<ObjectiveFunction> build_objective_function(ObjectiveFunctionType type, const Instance& instance) {
     switch(type) {
         case ObjectiveFunctionType::MAXCUT:
             return std::make_shared<Maxcut>(instance);
+        case ObjectiveFunctionType::MAXDICUT:
+            return std::make_shared<Maxdicut>(instance);
+        default:
+            throw std::invalid_argument("Objective function type not implemented");
     }
-    return std::make_shared<DummyFunction>(instance);
 }
 
 }
