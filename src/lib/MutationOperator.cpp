@@ -16,25 +16,25 @@ namespace eaframework {
 
 class DummyOperator : public MutationOperator {
 public:
-    DummyOperator(int _id, Seed s) : MutationOperator(_id, s) {}
+    DummyOperator(Seed s) : MutationOperator(s) {}
 
     std::shared_ptr<Individual> mutate(const Individual& parent) override {
-        auto copy = Individual(parent);
+        auto copy = std::make_shared<Individual>(parent);
 
-        for(auto& bit : copy.bit_vector) {
+        for(auto& bit : copy->bit_vector) {
             bit = BIT_ZERO;
         }
 
-        copy.bit_vector[0] = BIT_ONE;
+        copy->bit_vector[0] = BIT_ONE;
 
-        return std::make_shared<Individual>(std::move(copy));
+        return copy;
     }
 };
 
 class Unif : public MutationOperator {
     std::unique_ptr<std::bernoulli_distribution> dist;
 public:
-    Unif(int id, Seed s) : MutationOperator(id, s) {}
+    Unif(Seed s) : MutationOperator(s) {}
 
     void setup_initial_individual(Individual&) override {
         int bitCount = ea->getObjectiveFunction().bitVectorSize();
@@ -57,9 +57,9 @@ std::shared_ptr<MutationOperator> build_mutation_operator(const MutationOperator
     Seed s = ::rand();
     switch(config.type) {
         case MutationOperatorType::DEFAULT:
-            return std::make_shared<DummyOperator>(config.id, s);
+            return std::make_shared<DummyOperator>(s);
         case MutationOperatorType::UNIF:
-            return std::make_shared<Unif>(config.id, s);
+            return std::make_shared<Unif>(s);
         default:
             throw std::invalid_argument("Unknown Operator Type");
     }

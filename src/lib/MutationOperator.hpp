@@ -11,18 +11,15 @@ struct MutationOperatorConfig;
 typedef unsigned long long Seed;
 
 class MutationOperator {
-    int id;
 protected:
     std::mt19937 random_engine;
     EA* ea;
 public:
-    MutationOperator(int _id, Seed s) : id(_id), random_engine(s) {}
+    MutationOperator(Seed s) : random_engine(s) {}
 
     void setEA(EA* _ea) { ea = _ea; }
     virtual void setup_initial_individual(Individual&) {}
     virtual std::shared_ptr<Individual> mutate(const Individual&) = 0;
-
-    int getID() { return id; }
 };
 
 enum class MutationOperatorType {
