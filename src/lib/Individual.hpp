@@ -1,6 +1,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <iostream>
 
 namespace eaframework {
 
@@ -18,3 +19,5 @@ struct Individual {
 };
 
 }
+
+std::ostream & operator<<(std::ostream &os, const eaframework::Individual& ind);

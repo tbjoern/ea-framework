@@ -4,6 +4,7 @@ set(SOURCES
     EA.cpp
     Experiment.cpp
     Graph.cpp
+    Individual.cpp
     InformationCollector.cpp
     Instance.cpp
     MutationOperator.cpp
@@ -16,6 +17,7 @@ set(HEADERS
     Experiment.hpp
     Graph.hpp
     helpers.hpp
+    Individual.hpp
     InformationCollector.hpp
     Instance.hpp
     MutationOperator.hpp
