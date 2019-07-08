@@ -3,6 +3,7 @@ set(SOURCES
     EATest.cpp
     ExperimentTest.cpp
     GraphTest.cpp
+    InformationCollectorTest.cpp
     InstanceTest.cpp
     ObjectiveFunctionTest.cpp
 )

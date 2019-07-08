@@ -20,14 +20,15 @@ void execute_runs(std::string experiment_config_path, std::string instance_name)
 
 #pragma omp parallel for collapse(2)
     for(const auto& mutation_operator_config : experiment_config.mutation_operator_configs) {
-        for(int i = 0; i < experiment_config.run_count; ++i) {
+        for(int run = 0; run < experiment_config.run_count; ++run) {
+            int id = mutation_operator_config.id;
             auto mutation_operator = build_mutation_operator(mutation_operator_config);
             auto objective_function = build_objective_function(experiment_config.objective_function_type, instance);
             auto ea = EA(objective_function, mutation_operator);
             ea.make_initial_individual(instance);
             for(int generation = 0; generation < experiment_config.generation_count; ++generation) {
                 ea.next_generation();
-                information_collector->generation_snapshot(ea);
+                information_collector->generation_snapshot(id, run, ea);
             }
         }
     }

@@ -16,7 +16,8 @@ std::unordered_map<std::string, ObjectiveFunctionType> objective_function_type_f
 };
 
 std::unordered_map<std::string, InformationCollectorType> information_collector_type_from_string = {
-    {"default", InformationCollectorType::DEFAULT}
+    {"default", InformationCollectorType::DEFAULT},
+    {"iteration_data", InformationCollectorType::ITERATIONDATA},
 };
 
 static std::unordered_map<std::string, MutationOperatorType> mutation_operator_type_from_string = {
