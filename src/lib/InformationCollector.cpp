@@ -28,6 +28,7 @@ public:
 class IterationDataCollector : public InformationCollector {
     struct IterationData {
         double fitness;
+        double time;
         int run;
     };
     std::unordered_map<int, std::vector<IterationData>> id_to_results;
@@ -40,14 +41,15 @@ public:
 
         const auto& mutator = ea.getMutator();
         auto fitness = ea.getOffspringFitness();
-        results.push_back({fitness,run});
+        auto time = ea.getMutationTime();
+        results.push_back({fitness,time,run});
     }
 
     void output_to_stream(std::ostream& stream) override {
         for(const auto& pair : id_to_results) {
             int id = pair.first;
             for(const auto& data : pair.second) {
-                stream << id << "," << data.run << "," << data.fitness << std::endl;
+                stream << id << "," << data.run << "," << data.fitness << "," << data.time << std::endl;
             }
         }
     }

@@ -42,7 +42,7 @@ void EA::next_generation() {
     auto start_time = std::chrono::high_resolution_clock::now();
     offspring = mutator->mutate(*best_individual);
     auto stop_time = std::chrono::high_resolution_clock::now();
-    mutation_time = (stop_time - start_time).count();
+    mutation_time = std::chrono::duration_cast<std::chrono::microseconds>(stop_time - start_time).count();
 
     generation_improved = false;
     offspring_fitness = objective_function->evaluate(*offspring);
@@ -78,6 +78,10 @@ double EA::getOffspringFitness() const {
 
 bool EA::generationImproved() const {
     return generation_improved;
+}
+
+double EA::getMutationTime() const {
+    return mutation_time;
 }
 
 }
