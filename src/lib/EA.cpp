@@ -45,10 +45,10 @@ void EA::next_generation() {
     mutation_time = (stop_time - start_time).count();
 
     generation_improved = false;
-    double offspring_fitness = objective_function->evaluate(*offspring);
-    if(best_fitness_value < offspring_fitness) {
+    offspring_fitness = objective_function->evaluate(*offspring);
+    if(best_fitness < offspring_fitness) {
         best_individual = offspring;
-        best_fitness_value = offspring_fitness;
+        best_fitness = offspring_fitness;
         generation_improved = true;
     }
 }
@@ -69,11 +69,11 @@ const ObjectiveFunction& EA::getObjectiveFunction() const {
 }
 
 double EA::getBestFitness() const {
-    return best_fitness_value;
+    return best_fitness;
 }
 
 double EA::getOffspringFitness() const {
-    return offspring_fitness_value;
+    return offspring_fitness;
 }
 
 bool EA::generationImproved() const {

@@ -16,8 +16,8 @@ private:
     std::shared_ptr<ObjectiveFunction> objective_function;
     bool generation_improved;
     double mutation_time;
-    double best_fitness_value;
-    double offspring_fitness_value;
+    double best_fitness;
+    double offspring_fitness;
 
 public:
     const MutationOperator& getMutator() const;

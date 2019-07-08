@@ -45,4 +45,18 @@ TEST_F(EATest, TestRun) {
     EXPECT_EQ(individual.bit_vector[0], BIT_ONE);
 }
 
+TEST_F(EATest, UpdatesFitnessValues) {
+    auto ea = EA(maxcut, mutation_operator);
+
+    ea.make_initial_individual(instance);
+    EXPECT_EQ(ea.getBestFitness(), 0);
+    ea.next_generation();
+    EXPECT_EQ(ea.getBestFitness(), 4);
+    EXPECT_EQ(ea.getOffspringFitness(), 4);
+    EXPECT_TRUE(ea.generationImproved());
+
+    auto individual = ea.getBestIndividual();
+    EXPECT_EQ(individual.bit_vector[0], BIT_ONE);
+}
+
 } // namespace
