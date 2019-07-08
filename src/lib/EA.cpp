@@ -31,30 +31,31 @@ namespace eaframework {
 void EA::make_initial_individual(Instance& instance) {
     auto start_assignment_copy = Individual(*(instance.start_assignment));
     mutator->setup_initial_individual(start_assignment_copy);
-    parent = std::make_shared<Individual>(std::move(start_assignment_copy));
+    best_individual = std::make_shared<Individual>(std::move(start_assignment_copy));
 }
 
-EA::EA(std::shared_ptr<ObjectiveFunction> _objective_function, std::shared_ptr<MutationOperator> _mutator) : parent(nullptr), previous_parent(nullptr), mutator(_mutator), objective_function(_objective_function), generation_improved(false) {}
+EA::EA(std::shared_ptr<ObjectiveFunction> _objective_function, std::shared_ptr<MutationOperator> _mutator) : best_individual(nullptr), offspring(nullptr), mutator(_mutator), objective_function(_objective_function), generation_improved(false) {}
 
 void EA::next_generation() {
     auto start_time = std::chrono::high_resolution_clock::now();
-    auto offspring = mutator->mutate(*parent);
+    offspring = mutator->mutate(*best_individual);
     auto stop_time = std::chrono::high_resolution_clock::now();
     mutation_time = (stop_time - start_time).count();
 
     generation_improved = false;
-    previous_parent = parent;
-    if(objective_function->evaluate(*parent) < objective_function->evaluate(*offspring)) {
-        parent = offspring;
+    double offspring_fitness = objective_function->evaluate(*offspring);
+    if(best_fitness_value < offspring_fitness) {
+        best_individual = offspring;
+        best_fitness_value = offspring_fitness;
         generation_improved = true;
     }
 }
 
 const Individual& EA::getBestIndividual() const {
-    return *parent;
+    return *best_individual;
 }
-const Individual& EA::getPreviousIndividual() const {
-    return *previous_parent;
+const Individual& EA::getOffspring() const {
+    return *offspring;
 }
 
 const MutationOperator& EA::getMutator() const {
@@ -63,6 +64,14 @@ const MutationOperator& EA::getMutator() const {
 
 const ObjectiveFunction& EA::getObjectiveFunction() const {
     return *objective_function;
+}
+
+double EA::getBestFitness() const {
+    return best_fitness_value;
+}
+
+double EA::getOffspringFitness() const {
+    return offspring_fitness_value;
 }
 
 bool EA::generationImproved() const {

@@ -5,11 +5,20 @@
 
 namespace eaframework {
 
-class DummyFunction : public ObjectiveFunction {
-public:
-    DummyFunction(const Instance& p_instance) : ObjectiveFunction(p_instance) {}
+double ObjectiveFunction::evaluate(const Individual& individual) {
+    ++call_count;
+    return evaluate_impl(individual);
+}
 
-    double evaluate(const Individual& individual) const override {
+int ObjectiveFunction::callCount() const {
+    return call_count;
+}
+
+class TestFunction : public ObjectiveFunction {
+public:
+    TestFunction(const Instance& p_instance) : ObjectiveFunction(p_instance) {}
+
+    double evaluate_impl(const Individual& individual) const override {
         return 0.0;
     }
 };
@@ -18,7 +27,7 @@ class Maxcut : public ObjectiveFunction {
 public:
     Maxcut(const Instance& p_instance) : ObjectiveFunction(p_instance) {}
 
-    double evaluate(const Individual& individual) const override {
+    double evaluate_impl(const Individual& individual) const override {
         double cut_size = 0.0;
         const auto& edges = instance.graph->getEdges();
         const auto& bit_vector = individual.bit_vector;
@@ -35,7 +44,7 @@ class Maxdicut : public ObjectiveFunction {
 public:
     Maxdicut(const Instance& p_instance) : ObjectiveFunction(p_instance) {}
 
-    double evaluate(const Individual& individual) const override {
+    double evaluate_impl(const Individual& individual) const override {
         double cut_size = 0.0;
         const auto& bit_vector = individual.bit_vector;
         for(int node = 0; node < bit_vector.size(); ++node) {
@@ -53,6 +62,8 @@ public:
 
 std::shared_ptr<ObjectiveFunction> build_objective_function(ObjectiveFunctionType type, const Instance& instance) {
     switch(type) {
+        case ObjectiveFunctionType::TEST:
+            return std::make_shared<TestFunction>(instance);
         case ObjectiveFunctionType::MAXCUT:
             return std::make_shared<Maxcut>(instance);
         case ObjectiveFunctionType::MAXDICUT:

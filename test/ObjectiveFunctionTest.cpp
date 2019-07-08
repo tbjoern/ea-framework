@@ -28,6 +28,16 @@ protected:
     }
 };
 
+TEST_F(ObjectiveFunctionTest, TracksCallCount) {
+    auto test = build_objective_function(ObjectiveFunctionType::TEST, instance);
+
+    test->evaluate(*(instance.start_assignment));
+    test->evaluate(*(instance.start_assignment));
+    test->evaluate(*(instance.start_assignment));
+
+    ASSERT_EQ(test->callCount(), 3);
+}
+
 TEST_F(ObjectiveFunctionTest, MaxcutEvaluatesCorrectly) {
     auto maxcut = build_objective_function(ObjectiveFunctionType::MAXCUT, instance);
 

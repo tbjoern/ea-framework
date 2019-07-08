@@ -9,14 +9,19 @@ class Instance;
 struct Individual;
 
 class ObjectiveFunction {
+    int call_count;
 protected:
     const Instance& instance;
     ObjectiveFunction(const Instance& _instance) : instance(_instance) {}
+
+    virtual double evaluate_impl(const Individual&) const = 0;
 public:
-    virtual double evaluate(const Individual&) const = 0;
+    double evaluate(const Individual&);
+    int callCount() const;
 };
 
 enum class ObjectiveFunctionType {
+    TEST,
     MAXCUT,
     MAXDICUT
 };

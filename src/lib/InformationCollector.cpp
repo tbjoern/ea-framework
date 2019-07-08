@@ -11,7 +11,7 @@ class DummyCollector : public InformationCollector {
 public:
     void generation_snapshot(const EA& ea) override {
         const auto& mutator = ea.getMutator();
-        auto fitness = ea.getObjectiveFunction().evaluate(ea.getBestIndividual());
+        auto fitness = ea.getOffspringFitness();
         results.push_back(fitness);
     }
 

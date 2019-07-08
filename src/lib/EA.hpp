@@ -10,12 +10,14 @@ class Instance;
 
 class EA {
 private:
-    std::shared_ptr<const Individual> parent;
-    std::shared_ptr<const Individual> previous_parent;
+    std::shared_ptr<const Individual> best_individual;
+    std::shared_ptr<const Individual> offspring;
     std::shared_ptr<MutationOperator> mutator;
-    std::shared_ptr<const ObjectiveFunction> objective_function;
+    std::shared_ptr<ObjectiveFunction> objective_function;
     bool generation_improved;
     double mutation_time;
+    double best_fitness_value;
+    double offspring_fitness_value;
 
 public:
     const MutationOperator& getMutator() const;
@@ -27,9 +29,11 @@ public:
     void next_generation();
 
     const Individual& getBestIndividual() const;
-    const Individual& getPreviousIndividual() const;
+    const Individual& getOffspring() const;
     const ObjectiveFunction& getObjectiveFunction() const;
     double getMutationTime() const;
+    double getBestFitness() const;
+    double getOffspringFitness() const;
     bool generationImproved() const;
 };
 
