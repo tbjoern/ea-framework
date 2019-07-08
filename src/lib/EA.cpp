@@ -31,7 +31,7 @@ namespace eaframework {
 void EA::make_initial_individual(Instance& instance) {
     auto start_assignment_copy = Individual(*(instance.start_assignment));
     mutator->setup_initial_individual(start_assignment_copy);
-    parent = std::make_shared<Individual>(start_assignment_copy);
+    parent = std::make_shared<Individual>(std::move(start_assignment_copy));
 }
 
 EA::EA(std::shared_ptr<ObjectiveFunction> _objective_function, std::shared_ptr<MutationOperator> _mutator) : parent(nullptr), previous_parent(nullptr), mutator(_mutator), objective_function(_objective_function), generation_improved(false) {}
@@ -42,9 +42,11 @@ void EA::next_generation() {
     auto stop_time = std::chrono::high_resolution_clock::now();
     mutation_time = (stop_time - start_time).count();
 
+    generation_improved = false;
     previous_parent = parent;
     if(objective_function->evaluate(*parent) < objective_function->evaluate(*offspring)) {
         parent = offspring;
+        generation_improved = true;
     }
 }
 
@@ -61,6 +63,10 @@ const MutationOperator& EA::getMutator() const {
 
 const ObjectiveFunction& EA::getObjectiveFunction() const {
     return *objective_function;
+}
+
+bool EA::generationImproved() const {
+    return generation_improved;
 }
 
 }

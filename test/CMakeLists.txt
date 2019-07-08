@@ -1,5 +1,6 @@
 set(SOURCES
     main.cpp
+    EATest.cpp
     ExperimentTest.cpp
     GraphTest.cpp
     InstanceTest.cpp
