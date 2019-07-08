@@ -3,5 +3,5 @@ set(libraries
     cxxopts
 )
 
-add_executable(eaframework main.cpp)
+add_executable(eaframework eaframework.cpp)
 target_link_libraries(eaframework PRIVATE ${libraries})
