@@ -6,7 +6,7 @@ using namespace eaframework;
 namespace {
 
 TEST(Graph, AddEdge) {
-    Graph g{2};
+    Graph g{2, 1};
     auto success = g.addEdge(0, 1, 2);
 
     ASSERT_TRUE(success);
@@ -19,7 +19,7 @@ TEST(Graph, AddEdge) {
 }
 
 TEST(Graph, UpdateEdge) {
-    Graph g{2};
+    Graph g{2, 1};
     g.addEdge(0,1,1);
     auto success = g.updateEdge(0,1,10);
 

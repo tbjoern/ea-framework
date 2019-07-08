@@ -15,6 +15,7 @@ set(HEADERS
     EA.hpp
     Experiment.hpp
     Graph.hpp
+    helpers.hpp
     InformationCollector.hpp
     Instance.hpp
     MutationOperator.hpp

@@ -8,6 +8,7 @@
 #include <exception>
 #include <sstream>
 #include <iostream>
+#include <tuple>
 
 namespace {
 
@@ -32,7 +33,7 @@ public:
     std::ifstream input_file(filename);
     int nodes, edges;
     input_file >> nodes >> edges;
-    Graph adj_list(nodes);
+    Graph adj_list{nodes, edges};
 
     std::set<int> node_names;
     for (uint i = 0; i < edges; ++i) {
@@ -73,7 +74,7 @@ public:
     int nodes, edges;
     input_file >> nodes >> nodes >> edges;
     ++nodes; // indices start at 1
-    Graph adj_list(nodes);
+    Graph adj_list{nodes, edges};
 
     for (uint i = 0; i < edges; ++i) {
       int source, dest;
@@ -111,7 +112,7 @@ public:
 
     // node indices start at 0, that means we have largest_node + 1 nodes in
     // total
-    Graph adj_list(largest_node + 1);
+    Graph adj_list{largest_node + 1, edge_count};
 
     for (uint i = 0; i < edge_count; ++i) {
       int source, dest;
@@ -138,7 +139,7 @@ public:
     // p cnf <nodes> <edges>
     input_file >> dummy >> dummy >> nodes >> edges;
     // every vertex (literal) occurs twice, negative ones are negated
-    Graph adj_list(nodes * 2);
+    Graph adj_list{nodes * 2, edges};
 
     for (uint i = 0; i < edges; ++i) {
       int source, dest, weight;
@@ -161,14 +162,12 @@ public:
   }
 };
 
-Graph read_graph(std::string filename) {
+Graph read_graph_impl(std::string basename, std::string extension) {
     FileReader *reader;
-    std::string fileextension = get_extension(filename);
-    if(filename_map.count(fileextension) == 0) {
-        throw std::runtime_error("Could not determine file extension of file " +
-                                filename);
+    if(filename_map.count(extension) == 0) {
+        throw std::runtime_error("Unkown file extension " + extension + " of file " + basename + extension);
     }
-    switch (filename_map.at(fileextension)) {
+    switch (filename_map.at(extension)) {
         case FileExtension::EDGELIST:
             reader = new EdgeListReader();
             break;
@@ -183,7 +182,10 @@ Graph read_graph(std::string filename) {
             break;
     }
 
-    Graph adj_list = reader->readFile(filename);
+    if(!file_exists(basename + extension)) {
+      throw std::invalid_argument("File " + basename + extension + " does not exist or is not readable");
+    }
+    Graph adj_list = reader->readFile(basename + extension);
     delete reader;
 
     return adj_list;
@@ -191,8 +193,8 @@ Graph read_graph(std::string filename) {
 
 }
 
-namespace eaframework {
 
+namespace eaframework {
 
 bool Graph::addEdge(int start, int end, int weight) {
   if(edgeExists(start, end)) {
@@ -206,7 +208,7 @@ bool Graph::addEdge(int start, int end, int weight) {
 }
 
 bool Graph::addEdge(int start, int end) {
-  addEdge(start, end, 1);
+  return addEdge(start, end, 1);
 }
 bool Graph::updateEdge(int start, int end, int weight) {
   if(!edgeExists(start, end)) {
@@ -235,18 +237,28 @@ bool Graph::edgeExists(int start, int end) {
   return false;
 }
 
-const Edgepointers Graph::getOutEdges(int node) const {
+const Edgepointers& Graph::getOutEdges(int node) const {
   return out_edges[node];
 }
-const Edgepointers Graph::getInEdges(int node) const {
+const Edgepointers& Graph::getInEdges(int node) const {
   return in_edges[node];
 }
 
-std::shared_ptr<Graph> read_graph(std::string filename) {
-    auto graph = ::read_graph(filename);
+const Edgelist& Graph::getEdges() const {
+  return edges;
+}
+
+std::shared_ptr<Graph> read_graph(std::string basename, std::string extension) {
+    auto graph = ::read_graph_impl(basename, extension);
     auto graph_ptr = std::make_shared<Graph>(std::move(graph));
 
     return graph_ptr;
+}
+
+std::shared_ptr<Graph> read_graph(std::string filename) {
+  std::string basename, extension;
+  std::tie(basename, extension) = split_filename(filename);
+  return read_graph(basename, extension);
 }
 
 int Graph::node_count() const {
