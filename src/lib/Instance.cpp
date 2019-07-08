@@ -23,6 +23,9 @@ std::shared_ptr<Individual> read_start_assignment(std::string filename) {
 
     while(input_file.peek() != EOF) {
         input_file >> node;
+        if(!input_file.good()){
+            break;
+        }
         individual->bit_vector[node] = BIT_ONE;
     }
     

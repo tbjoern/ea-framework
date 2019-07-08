@@ -7,7 +7,7 @@ using namespace eaframework;
 
 namespace {
 
-TEST(Instance, ReadsStartAssignmentFromFile) {
+TEST(Instance, ReadsStartAssignment) {
     auto assignment = read_start_assignment("data/test.assignment");
 
     Individual expected;
@@ -19,6 +19,15 @@ TEST(Instance, ReadsStartAssignmentFromFile) {
     }
 }
 
+TEST(Instance, ReadsEmptyAssignment) {
+    auto assignment = read_start_assignment("data/InstanceTest/empty.assignment");
+
+    Individual expected;
+    expected.bit_vector = std::vector<unsigned short>{0, 0, 0, 0};
+
+    ASSERT_EQ(assignment->bit_vector.size(), 4);
+}
+
 TEST(Instance, ReadsInstance) {
     auto instance = read_instance("data/test.txt");
 
@@ -26,5 +35,6 @@ TEST(Instance, ReadsInstance) {
 
     ASSERT_EQ(instance.start_assignment->bit_vector.size(), 4);
 }
+
 
 }
