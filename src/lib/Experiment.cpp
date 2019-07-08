@@ -20,7 +20,8 @@ std::unordered_map<std::string, InformationCollectorType> information_collector_
 };
 
 static std::unordered_map<std::string, MutationOperatorType> mutation_operator_type_from_string = {
-    {"default", MutationOperatorType::DEFAULT}
+    {"default", MutationOperatorType::DEFAULT},
+    {"unif", MutationOperatorType::UNIF},
 };
 
 template<typename T>
