@@ -2,6 +2,7 @@ set(SOURCES
     main.cpp
     GraphTest.cpp
     InstanceTest.cpp
+    ObjectiveFunctionTest.cpp
 )
 
 set(HEADERS

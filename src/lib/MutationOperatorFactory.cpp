@@ -21,7 +21,7 @@ public:
             }
         }
 
-        return std::make_shared<Individual>(copy);
+        return std::make_shared<Individual>(std::move(copy));
     }
 };
 
