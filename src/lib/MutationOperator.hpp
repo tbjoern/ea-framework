@@ -24,7 +24,9 @@ public:
 
 enum class MutationOperatorType {
     DEFAULT,
-    UNIF
+    UNIF,
+    FMUT,
+    PMUT
 };
 
 std::shared_ptr<MutationOperator> build_mutation_operator(const MutationOperatorConfig&);

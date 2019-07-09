@@ -12,12 +12,7 @@ enum class MutationOperatorType;
 
 struct MutationOperatorParameter {
     std::string name;
-    union ParamType {
-        int i;
-        double d;
-        bool b;
-    };
-    ParamType value;
+    double value;
 };
 
 struct MutationOperatorConfig {

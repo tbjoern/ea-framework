@@ -5,6 +5,7 @@ set(SOURCES
     GraphTest.cpp
     InformationCollectorTest.cpp
     InstanceTest.cpp
+    MutationOperatorTest.cpp
     ObjectiveFunctionTest.cpp
 )
 

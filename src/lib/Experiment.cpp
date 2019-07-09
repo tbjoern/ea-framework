@@ -23,6 +23,8 @@ std::unordered_map<std::string, InformationCollectorType> information_collector_
 static std::unordered_map<std::string, MutationOperatorType> mutation_operator_type_from_string = {
     {"default", MutationOperatorType::DEFAULT},
     {"unif", MutationOperatorType::UNIF},
+    {"fmut", MutationOperatorType::FMUT},
+    {"pmut", MutationOperatorType::PMUT},
 };
 
 template<typename T>
@@ -62,7 +64,7 @@ ExperimentConfig read_experiment_configuration(std::string path) {
             for (json::iterator it = arguments.begin(); it != arguments.end(); ++it) {
                 auto param = MutationOperatorParameter{};
                 param.name = it.key();
-                param.value.d = it.value();
+                param.value = it.value();
                 cfg.parameters.push_back(param);
             }
         }
