@@ -12,7 +12,7 @@ namespace eaframework {
 class DummyCollector : public InformationCollector {
     std::vector<double> results;
 public:
-    void generation_snapshot(int id, int run, const EA& ea) override {
+    void generation_snapshot(int id, int run, int generation, const EA& ea) override {
         const auto& mutator = ea.getMutator();
         auto fitness = ea.getOffspringFitness();
         results.push_back(fitness);
@@ -30,29 +30,32 @@ class IterationDataCollector : public InformationCollector {
         double fitness;
         double time;
         int objectiveFunctionCalls;
-        int run;
+        int generation;
     };
     std::unordered_map<int, std::vector<IterationData>> id_to_results;
 public:
-    void generation_snapshot(int id, int run, const EA& ea) override {
-        if(id_to_results.count(id) == 0) {
-            id_to_results[id] = std::vector<IterationData>();
+    void generation_snapshot(int id, int run, int generation, const EA& ea) override {
+        int index = id * 1000 + run;
+        if(id_to_results.count(index) == 0) {
+            id_to_results[index] = std::vector<IterationData>();
         }
-        auto& results = id_to_results[id];
+        auto& results = id_to_results[index];
 
         const auto& mutator = ea.getMutator();
         const auto& objective_function = ea.getObjectiveFunction();
         auto objective_function_calls = objective_function.callCount();
         auto fitness = ea.getOffspringFitness();
         auto time = ea.getMutationTime();
-        results.push_back({fitness,time,objective_function_calls,run});
+        results.push_back({fitness,time,objective_function_calls, generation});
     }
 
     void output_to_stream(std::ostream& stream) override {
+        stream << "id, run, generation, fitness, time, objcalls" << std::endl;
         for(const auto& pair : id_to_results) {
-            int id = pair.first;
+            int id = pair.first / 1000;
+            int run = pair.first % 1000;
             for(const auto& data : pair.second) {
-                stream << id << "," << data.run << "," << data.fitness << "," << data.time << "," << data.objectiveFunctionCalls << std::endl;
+                stream << id << "," << run << "," << data.generation << "," << data.fitness << "," << data.time << "," << data.objectiveFunctionCalls << std::endl;
             }
         }
     }

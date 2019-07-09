@@ -14,7 +14,7 @@ enum class InformationCollectorType {
 
 class InformationCollector {
 public:
-    virtual void generation_snapshot(int id, int run, const EA&) = 0;
+    virtual void generation_snapshot(int id, int run, int generation, const EA&) = 0;
 
     virtual void output_to_stream(std::ostream&) = 0;
 };

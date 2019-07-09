@@ -36,7 +36,7 @@ TEST_F(InformationCollectorTest, RecordsIterationData) {
     auto information_collector = build_information_collector(InformationCollectorType::ITERATIONDATA);
 
     ea->make_initial_individual(instance);
-    information_collector->generation_snapshot(0, 0, *ea);
+    information_collector->generation_snapshot(0, 0, 0, *ea);
     
     std::stringstream s;
     information_collector->output_to_stream(s);
@@ -48,9 +48,9 @@ TEST_F(InformationCollectorTest, RecordsSuccessiveIterationData) {
     auto information_collector = build_information_collector(InformationCollectorType::ITERATIONDATA);
 
     ea->make_initial_individual(instance);
-    information_collector->generation_snapshot(0, 0, *ea);
+    information_collector->generation_snapshot(0, 0, 0,*ea);
     ea->next_generation();
-    information_collector->generation_snapshot(0, 0, *ea);
+    information_collector->generation_snapshot(0, 0, 1,*ea);
     
     std::stringstream s;
     information_collector->output_to_stream(s);
