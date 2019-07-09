@@ -29,6 +29,7 @@ class IterationDataCollector : public InformationCollector {
     struct IterationData {
         double fitness;
         double time;
+        int objectiveFunctionCalls;
         int run;
     };
     std::unordered_map<int, std::vector<IterationData>> id_to_results;
@@ -40,16 +41,18 @@ public:
         auto& results = id_to_results[id];
 
         const auto& mutator = ea.getMutator();
+        const auto& objective_function = ea.getObjectiveFunction();
+        auto objective_function_calls = objective_function.callCount();
         auto fitness = ea.getOffspringFitness();
         auto time = ea.getMutationTime();
-        results.push_back({fitness,time,run});
+        results.push_back({fitness,time,objective_function_calls,run});
     }
 
     void output_to_stream(std::ostream& stream) override {
         for(const auto& pair : id_to_results) {
             int id = pair.first;
             for(const auto& data : pair.second) {
-                stream << id << "," << data.run << "," << data.fitness << "," << data.time << std::endl;
+                stream << id << "," << data.run << "," << data.fitness << "," << data.time << "," << data.objectiveFunctionCalls << std::endl;
             }
         }
     }

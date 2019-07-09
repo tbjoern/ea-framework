@@ -12,7 +12,7 @@ class ObjectiveFunction {
     int call_count;
 protected:
     const Instance& instance;
-    ObjectiveFunction(const Instance& _instance) : instance(_instance) {}
+    ObjectiveFunction(const Instance& _instance) : instance(_instance), call_count(0) {}
 
     virtual double evaluate_impl(const Individual&) const = 0;
 public:
