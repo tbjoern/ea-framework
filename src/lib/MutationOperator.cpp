@@ -137,8 +137,8 @@ class PMUT : public MutationOperator
 public:
     PMUT(Seed s, double _power_law_beta) : MutationOperator(s), power_law_beta(_power_law_beta) {}
 
-    void setup_initial_individual(Individual&) override {
-        bitCount = ea->getObjectiveFunction().bitVectorSize();
+    void setup_initial_individual(Individual& individual) override {
+        bitCount = individual.bit_vector.size();
         p_gen = std::make_unique<PowerLawGenerator>(bitCount, power_law_beta);
         int_dist = std::make_unique<std::uniform_int_distribution<>>(0, bitCount-1);
     }
@@ -161,6 +161,59 @@ public:
         return copy;
     }
 };
+
+namespace activity {
+    struct Parameters {
+        int min, max, start, inc, dec;
+        double decay_rate;
+    };
+
+    void init(Parameters params, Individual& individual) {
+        individual.add_vector("activity");
+        auto& activity = individual.data_vectors["activity"];
+        activity = std::vector<double>(individual.bit_vector.size(), params.start);
+    }
+
+    void update(Parameters params, Individual& individual, std::vector<unsigned short> bits) {
+        
+    }
+}
+
+class PMUTActivity : public MutationOperator {
+    double power_law_beta;
+    activity::Parameters activity_params;
+    std::unique_ptr<PowerLawGenerator> p_gen;
+public:
+    PMUTActivity(Seed s, double _power_law_beta, activity::Parameters _activity_params) : MutationOperator(s), power_law_beta(_power_law_beta), activity_params(_activity_params) {}
+
+    void setup_initial_individual(Individual& individual) override {
+        auto bitCount = individual.bit_vector.size();
+        p_gen = std::make_unique<PowerLawGenerator>(bitCount, power_law_beta);
+
+        activity::init(activity_params, individual);
+    }
+
+    std::shared_ptr<Individual> mutate(const Individual &parent) override
+    {
+        auto copy = std::make_shared<Individual>(parent);
+        auto k = p_gen->get(random_engine);
+
+        const auto& activity = parent.data_vectors.at("activity");
+        auto dist = std::discrete_distribution(activity.cbegin(), activity.cend());
+
+        std::vector<int> bits_to_flip;
+        while(k) {
+            int bit = dist(random_engine);
+            bits_to_flip.push_back(bit);
+            --k;
+        }
+        for(auto bit : bits_to_flip) {
+            copy->bit_vector[bit] = !copy->bit_vector[bit];
+        }
+
+        return copy;
+    }
+}
 
 std::shared_ptr<MutationOperator> build_mutation_operator(const MutationOperatorConfig &config)
 {
