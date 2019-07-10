@@ -11,7 +11,7 @@ TEST(Instance, ReadsStartAssignment) {
     auto assignment = read_start_assignment("data/test.assignment");
 
     Individual expected;
-    expected.bit_vector = std::vector<unsigned short>{0, 0, 1, 1};
+    expected.bit_vector = std::vector<Bit>{0, 0, 1, 1};
 
     ASSERT_EQ(assignment->bit_vector.size(), 4);
     for(int i = 0; i < 4; ++i) {
@@ -23,7 +23,7 @@ TEST(Instance, ReadsEmptyAssignment) {
     auto assignment = read_start_assignment("data/InstanceTest/empty.assignment");
 
     Individual expected;
-    expected.bit_vector = std::vector<unsigned short>{0, 0, 0, 0};
+    expected.bit_vector = std::vector<Bit>{0, 0, 0, 0};
 
     ASSERT_EQ(assignment->bit_vector.size(), 4);
 }

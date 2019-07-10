@@ -22,7 +22,7 @@ protected:
         g.addEdge(0,5);
 
         Individual start_assignment;
-        start_assignment.bit_vector = std::vector<unsigned short>{BIT_ONE, BIT_ZERO, BIT_ZERO, BIT_ZERO, BIT_ZERO, BIT_ONE};
+        start_assignment.bit_vector = std::vector<Bit>{BIT_ONE, BIT_ZERO, BIT_ZERO, BIT_ZERO, BIT_ZERO, BIT_ONE};
 
         instance = Instance{std::make_shared<Graph>(std::move(g)), std::make_shared<Individual>(std::move(start_assignment))};
     }
@@ -52,6 +52,34 @@ TEST_F(ObjectiveFunctionTest, MaxdicutEvaluatesCorrectly) {
     double cut_size = maxdicut->evaluate(*(instance.start_assignment));
 
     ASSERT_EQ(cut_size, 2);
+}
+
+TEST_F(ObjectiveFunctionTest, MaxcutRespectsBITNONE) {
+    auto maxcut = build_objective_function(ObjectiveFunctionType::MAXCUT, instance);
+    Individual test = *(instance.start_assignment);
+    for(auto& bit : test.bit_vector) {
+        bit = BIT_NONE;
+    }
+    test.bit_vector[0] = BIT_ONE;
+    test.bit_vector[1] = BIT_ZERO;
+
+    double cut_size = maxcut->evaluate(test);
+
+    ASSERT_EQ(cut_size, 1);
+}
+
+TEST_F(ObjectiveFunctionTest, MaxdicutRespectsBITNONE) {
+    auto maxcut = build_objective_function(ObjectiveFunctionType::MAXCUT, instance);
+    Individual test = *(instance.start_assignment);
+    for(auto& bit : test.bit_vector) {
+        bit = BIT_NONE;
+    }
+    test.bit_vector[0] = BIT_ONE;
+    test.bit_vector[1] = BIT_ZERO;
+
+    double cut_size = maxcut->evaluate(test);
+
+    ASSERT_EQ(cut_size, 1);
 }
 
 }

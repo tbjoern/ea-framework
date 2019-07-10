@@ -36,7 +36,7 @@ public:
         const auto& edges = instance.graph->getEdges();
         const auto& bit_vector = individual.bit_vector;
         for(const auto& edge : edges) {
-            if(bit_vector[edge.start] != bit_vector[edge.end]) {
+            if(bit_vector[edge.start] != bit_vector[edge.end] && bit_vector[edge.start] != BIT_NONE && bit_vector[edge.end] != BIT_NONE) {
                 cut_size += edge.weight;
             }
         }

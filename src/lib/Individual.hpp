@@ -7,11 +7,14 @@ namespace eaframework {
 
 enum {
     BIT_ONE = 1,
-    BIT_ZERO = 0
+    BIT_ZERO = 0,
+    BIT_NONE = 2,
 };
 
+typedef unsigned short Bit;
+
 struct Individual {
-    std::vector<unsigned short> bit_vector;
+    std::vector<Bit> bit_vector;
 
     std::unordered_map<std::string, std::vector<double>> data_vectors;
 
