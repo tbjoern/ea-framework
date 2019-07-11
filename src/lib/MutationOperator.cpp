@@ -1,9 +1,9 @@
 #include "MutationOperator.hpp"
 
-#include <Individual.hpp>
 #include <Experiment.hpp>
 #include <EA.hpp>
 #include <ObjectiveFunction.hpp>
+#include <activity_helpers.hpp>
 
 #include <random>
 #include <memory>
@@ -12,6 +12,10 @@
 namespace
 {
 std::random_device rand;
+
+template <typename T> int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
+}
 
 struct PowerLawGenerator
 {
@@ -161,62 +165,6 @@ public:
         return copy;
     }
 };
-
-namespace activity {
-    struct Parameters {
-        int min, max, start, inc, dec;
-        double decay_rate;
-    };
-
-    void init(Parameters params, Individual& individual) {
-        individual.add_vector("activity");
-        auto& activity = individual.data_vectors["activity"];
-        activity = std::vector<double>(individual.bit_vector.size(), params.start);
-    }
-
-    std::vector<std::vector<double>> activityValues(Individual& individual, ObjectiveFunction& func) {
-        const auto bit_count = individual.bit_vector.size();
-        auto matrix = std::vector<std::vector<double>>(bit_count, std::vector<double>(bit_count, 0));
-        auto zero_individual = Individual();
-        zero_individual.bit_vector = std::vector<Bit>(bit_count, BIT_ZERO);
-        for(int bit_a = 0; bit_a < bit_count; ++bit_a) {
-            zero_individual.bit_vector[bit_a] = BIT_ONE;
-            for(int bit_b = 0; bit_b < bit_count; ++bit_b) {
-                if(bit_a == bit_b) {
-                    continue;
-                }
-                zero_individual.bit_vector[bit_b] = BIT_ZERO;
-                auto a_b = func.evaluate(zero_individual);
-                matrix[bit_a][bit_b] = a_b;
-                zero_individual.bit_vector[bit_b] = BIT_NONE;
-            }
-            zero_individual.bit_vector[bit_a] = BIT_NONE;
-        }
-
-        return matrix;
-    }
-
-    void update(Parameters activity_consts, Individual& individual, std::vector<Bit> bits, std::vector<std::vector<double>> matrix) {
-        auto& activity = individual.data_vectors["activity"];
-        auto& bit_vector = individual.bit_vector;
-        for (auto bit : bits) {
-            activity[bit] = activity_consts.start;
-        }
-        for (const auto bit : bits) {
-            for(int bit_other = 0; bit_other < bit_vector.size(); ++bit_other) {
-                if (bit == bit_other) {
-                    continue;
-                }
-                auto change_value = (bit_vector[bit] != bit_vector[bit_other]) * ()
-                if(matrix[bit][bit_other]) {
-                    if(bit_vector[bit] != bit_vector[bit_other]) {
-
-                    }
-                }
-            }
-        }
-    }
-}
 
 class PMUTActivity : public MutationOperator {
     double power_law_beta;

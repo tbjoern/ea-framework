@@ -1,6 +1,7 @@
 find_package(OpenMP)
 
 set(SOURCES
+    activity_helpers.cpp
     EA.cpp
     Experiment.cpp
     Graph.cpp
@@ -13,6 +14,7 @@ set(SOURCES
 )
 
 set(HEADERS
+    activity_helpers.hpp
     EA.hpp
     Experiment.hpp
     Graph.hpp

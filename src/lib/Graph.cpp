@@ -228,7 +228,7 @@ bool Graph::updateEdge(int start, int end, int weight) {
   return false;
 }
 
-bool Graph::edgeExists(int start, int end) {
+bool Graph::edgeExists(int start, int end) const {
   for(auto edge : out_edges[start]) {
     auto& e_ref = *edge;
     if(e_ref.end == end) {

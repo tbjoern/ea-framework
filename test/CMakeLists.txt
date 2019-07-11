@@ -1,4 +1,5 @@
 set(SOURCES
+    ActivityHelperTest.cpp
     main.cpp
     EATest.cpp
     ExperimentTest.cpp
