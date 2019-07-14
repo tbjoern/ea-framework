@@ -9,6 +9,7 @@
 #include <sstream>
 #include <iostream>
 #include <tuple>
+#include <limits>
 
 namespace {
 
