@@ -39,20 +39,6 @@
 				"decay_rate": 0.95,
 				"power_law_beta": 2.5
 			}
-		},
-		{
-			"type": "unifSigmoid",
-			"id": 4,
-			"arguments": {
-				"max": 100,
-				"min": 1,
-				"start": 50,
-				"inc": 1,
-				"dec": 1,
-				"decay_rate": 0.95,
-				"sigmoid_smoothness": 0.0005
-			}
 		}
-
 	]
 }

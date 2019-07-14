@@ -11,6 +11,8 @@
 #include <functional>
 #include <sstream>
 
+#include <iostream>
+
 namespace
 {
 std::random_device rand;
@@ -173,39 +175,47 @@ class PMUTActivity : public MutationOperator {
     activity::Parameters activity_params;
     std::unique_ptr<PowerLawGenerator> p_gen;
     activity::Matrix matrix;
+    Individual zero_individual;
 public:
     PMUTActivity(Seed s, activity::Parameters _activity_params, double _power_law_beta) : MutationOperator(s), power_law_beta(_power_law_beta), activity_params(_activity_params) {}
 
     void setup_initial_individual(Individual& individual) override {
+        std::cout << "PMUTActivity init start" << std::endl;
         auto bitCount = individual.bit_vector.size();
 
         activity::init(activity_params, individual);
-        matrix = activity::activityValues(individual, ea->getObjectiveFunction());
+        std::cout << "PMUTActivity init matrix" << std::endl;
+        zero_individual.bit_vector = std::vector<Bit>(bitCount, BIT_NONE);
 
+        std::cout << "PMUTActivity init generator" << std::endl;
         p_gen = std::make_unique<PowerLawGenerator>(bitCount, power_law_beta);
+        std::cout << "PMUTActivity init done" << std::endl;
     }
 
     std::shared_ptr<Individual> mutate(const Individual &parent) override
     {
+        std::cout << "PMUTActivity mutate start" << std::endl;
         auto copy = std::make_shared<Individual>(parent);
         auto k = p_gen->get(random_engine);
 
         const auto& activity = parent.data_vectors.at("activity");
         auto dist = std::discrete_distribution<int>(activity.cbegin(), activity.cend());
 
+        std::cout << "PMUTActivity mutate loop" << std::endl;
         std::vector<Bit> bits_to_flip;
-        while(k) {
+        for(int i = 0; i < k; ++i) {
             int bit = dist(random_engine);
             bits_to_flip.push_back(bit);
-            --k;
         }
         for(auto bit : bits_to_flip) {
             copy->bit_vector[bit] = !copy->bit_vector[bit];
         }
 
-        activity::update(activity_params, *copy, bits_to_flip, matrix);
+        std::cout << "PMUTActivity mutate update" << std::endl;
+        activity::update(activity_params, *copy, bits_to_flip, zero_individual, ea->getObjectiveFunction());
         activity::decay(activity_params, *copy);
 
+        std::cout << "PMUTActivity mutate done" << std::endl;
         return copy;
     }
 };
@@ -228,6 +238,7 @@ class UnifSigmoid : public MutationOperator {
     double sigmoid_smoothness;
     std::function<bool(int)> activity_sampler;
     activity::Matrix matrix;
+    Individual zero_individual;
 public:
     UnifSigmoid(Seed s,activity::Parameters _activity_params, double _sigmoid_smoothness) : MutationOperator(s), activity_params(_activity_params), sigmoid_smoothness(_sigmoid_smoothness) {}
 
@@ -235,7 +246,7 @@ public:
         auto bitCount = individual.bit_vector.size();
 
         activity::init(activity_params, individual);
-        matrix = activity::activityValues(individual, ea->getObjectiveFunction());
+        zero_individual.bit_vector = std::vector<Bit>(bitCount, BIT_NONE);
 
         activity_sampler = build_activity_sigmoid_sampler(bitCount);
     }
@@ -280,7 +291,7 @@ public:
             copy->bit_vector[bit] = !copy->bit_vector[bit];
         }
 
-        activity::update(activity_params, *copy, bits_to_flip, matrix);
+        activity::update(activity_params, *copy, bits_to_flip, zero_individual, ea->getObjectiveFunction());
         activity::decay(activity_params, *copy);
 
         return copy;
