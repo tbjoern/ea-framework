@@ -56,6 +56,13 @@ namespace activity {
                     auto connection_mod = (bit_vector[bit] == BIT_ONE) * weight;
                     
                     activity[bit_other] += side_mod * connection_mod;
+                    
+                    if(activity[bit_other] > activity_consts.max) {
+                        activity[bit_other] = activity_consts.max;
+                    }
+                    else if (activity[bit_other] < activity_consts.min) {
+                        activity[bit_other] = activity_consts.min;
+                    }
                 }
             }
             else if (bit_vector[bit] == BIT_ZERO) {
@@ -69,6 +76,13 @@ namespace activity {
                     auto connection_mod = (bit_vector[bit] == BIT_ZERO) * weight;
                     
                     activity[bit_other] += side_mod * connection_mod;
+
+                    if(activity[bit_other] > activity_consts.max) {
+                        activity[bit_other] = activity_consts.max;
+                    }
+                    else if (activity[bit_other] < activity_consts.min) {
+                        activity[bit_other] = activity_consts.min;
+                    }
                 }
             }
         }

@@ -94,4 +94,29 @@ TEST_F(ActivityHelperTest, UpdatesActivityValues) {
     EXPECT_EQ(activity[3], params.start + params.inc);
 }
 
+TEST_F(ActivityHelperTest, RespectsMaxAndMin) {
+    Individual test = Individual(*(instance.start_assignment));
+    auto graph = activity::activityValues(test.bit_vector.size(), *maxdicut);
+
+    params.inc = 10;
+    params.dec = 10;
+    params.max = 1;
+    params.start = 0;
+    params.min = -1;
+
+    activity::init(params, test);
+    test.bit_vector[0] = BIT_ONE;
+    auto& activity = test.data_vectors["activity"];
+
+    activity::update(params, test, {0}, *graph);
+
+    EXPECT_EQ(activity[1], params.min);
+
+    test.bit_vector[0] = BIT_ZERO;
+
+    activity::update(params, test, {0}, *graph);
+
+    EXPECT_EQ(activity[3], params.max);
+}
+
 }
