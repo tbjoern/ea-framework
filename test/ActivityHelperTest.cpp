@@ -50,18 +50,8 @@ TEST_F(ActivityHelperTest, CalculatesActivityValues) {
     
     auto graph = activity::activityValues(test.bit_vector.size(), *maxdicut);
     const auto& edges = graph->getEdges();
-    for(const auto& edge : edges) {
-        std::cout << edge.start << "|" << edge.end << std::endl;
-    }
-
-    const auto& out_edges = graph->getOutEdges(0);
-    for(const auto edge : out_edges) {
-        std::cout << edge->start << "|" << edge->end << std::endl;
-    }
-
     for(int node = 0; node < 6; ++node) {
         for(int node2 = 0; node2 < 6; ++node2) {
-            std::cout << node << "|" << node2 << std::endl;
             if(instance.graph->edgeExists(node, node2)) {
                 EXPECT_TRUE(graph->edgeExists(node, node2));
             }
