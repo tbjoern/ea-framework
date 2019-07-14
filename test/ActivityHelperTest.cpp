@@ -89,7 +89,8 @@ TEST_F(ActivityHelperTest, UpdatesActivityValues) {
     test.bit_vector[3] = BIT_ZERO;
     test.bit_vector[0] = BIT_ZERO;
     activity::update(params, test, {0}, matrix);
-    EXPECT_EQ(activity[1], params.start - params.dec);
+    EXPECT_EQ(activity[1], params.start); // stays the same
+    EXPECT_EQ(activity[2], params.start - params.dec); // stays the same
     EXPECT_EQ(activity[3], params.start + params.inc);
 }
 

@@ -36,9 +36,6 @@ namespace activity {
     void update(Parameters activity_consts, Individual& individual, std::vector<Bit> bits, Matrix matrix) {
         auto& activity = individual.data_vectors["activity"];
         auto& bit_vector = individual.bit_vector;
-        for (auto bit : bits) {
-            activity[bit] = activity_consts.start;
-        }
         for (const auto bit : bits) {
             for(int bit_other = 0; bit_other < bit_vector.size(); ++bit_other) {
                 if (bit == bit_other) {
@@ -53,6 +50,9 @@ namespace activity {
                 
                 activity[bit_other] += side_mod * connection_mod;
             }
+        }
+        for (auto bit : bits) {
+            activity[bit] = activity_consts.start;
         }
     }
 
