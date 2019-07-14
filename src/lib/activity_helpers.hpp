@@ -1,10 +1,12 @@
-#include <Individual.hpp>
-#include <Graph.hpp>
+#pragma once
 #include <memory>
+#include <vector>
+#include <Individual.hpp>
 
 namespace eaframework {
 
     class ObjectiveFunction;
+    class Graph;
 
     namespace activity {
         struct Parameters {
@@ -16,7 +18,7 @@ namespace eaframework {
 
         void init(const Parameters& params, Individual& individual);
 
-        std::shared_ptr<Graph> activityValues(int bit_count, ObjectiveFunction& func);
+        std::shared_ptr<const Graph> activityValues(int bit_count, ObjectiveFunction& func);
 
         void update(const Parameters& activity_consts, Individual& individual, const std::vector<Bit>& bits, const Graph& graph);
 

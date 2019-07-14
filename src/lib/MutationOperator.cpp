@@ -172,7 +172,7 @@ class PMUTActivity : public MutationOperator {
     double power_law_beta;
     activity::Parameters activity_params;
     std::unique_ptr<PowerLawGenerator> p_gen;
-    std::shared_ptr<Graph> graph;
+    std::shared_ptr<const Graph> graph;
 public:
     PMUTActivity(Seed s, activity::Parameters _activity_params, double _power_law_beta) : MutationOperator(s), power_law_beta(_power_law_beta), activity_params(_activity_params) {}
 
@@ -227,7 +227,7 @@ class UnifSigmoid : public MutationOperator {
     activity::Parameters activity_params;
     double sigmoid_smoothness;
     std::function<bool(int)> activity_sampler;
-    std::shared_ptr<Graph> graph;
+    std::shared_ptr<const Graph> graph;
 public:
     UnifSigmoid(Seed s,activity::Parameters _activity_params, double _sigmoid_smoothness) : MutationOperator(s), activity_params(_activity_params), sigmoid_smoothness(_sigmoid_smoothness) {}
 

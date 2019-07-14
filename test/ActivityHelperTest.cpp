@@ -2,6 +2,7 @@
 #include <activity_helpers.hpp>
 #include <Instance.hpp>
 #include <ObjectiveFunction.hpp>
+#include <Graph.hpp>
 
 using namespace eaframework;
 

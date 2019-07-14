@@ -2,8 +2,8 @@
 
 #include <vector>
 #include <ObjectiveFunction.hpp>
-
-#include <iostream>
+#include <Graph.hpp>
+#include <Instance.hpp>
 
 namespace eaframework {
 namespace activity {
@@ -13,32 +13,32 @@ namespace activity {
         activity = std::vector<double>(individual.bit_vector.size(), params.start);
     }
 
-    std::shared_ptr<Graph> activityValues(int bit_count, ObjectiveFunction& func) {
-        auto zero_individual = Individual();
-        zero_individual.bit_vector = std::vector<Bit>(bit_count, BIT_NONE);
-        auto edges = std::vector<Edge>();
-        for(int bit_a = 0; bit_a < bit_count; ++bit_a) {
-            zero_individual.bit_vector[bit_a] = BIT_ONE;
-            for(int bit_b = 0; bit_b < bit_count; ++bit_b) {
-                if(bit_a == bit_b) {
-                    continue;
-                }
-                zero_individual.bit_vector[bit_b] = BIT_ZERO;
-                auto a_b = func.evaluate(zero_individual);
-                if(a_b != 0) {
-                    edges.push_back({bit_a, bit_b, a_b});
-                }
-                zero_individual.bit_vector[bit_b] = BIT_NONE;
-            }
-            zero_individual.bit_vector[bit_a] = BIT_NONE;
-        }
+    std::shared_ptr<const Graph> activityValues(int bit_count, ObjectiveFunction& func) {
+        // auto zero_individual = Individual();
+        // zero_individual.bit_vector = std::vector<Bit>(bit_count, BIT_NONE);
+        // auto edges = std::vector<Edge>();
+        // for(int bit_a = 0; bit_a < bit_count; ++bit_a) {
+        //     zero_individual.bit_vector[bit_a] = BIT_ONE;
+        //     for(int bit_b = 0; bit_b < bit_count; ++bit_b) {
+        //         if(bit_a == bit_b) {
+        //             continue;
+        //         }
+        //         zero_individual.bit_vector[bit_b] = BIT_ZERO;
+        //         auto a_b = func.evaluate(zero_individual);
+        //         if(a_b != 0) {
+        //             edges.push_back({bit_a, bit_b, a_b});
+        //         }
+        //         zero_individual.bit_vector[bit_b] = BIT_NONE;
+        //     }
+        //     zero_individual.bit_vector[bit_a] = BIT_NONE;
+        // }
 
-        auto graph = std::make_shared<Graph>(bit_count, edges.size());
-        for(const auto& edge : edges) {
-            graph->addEdge(edge.start, edge.end, edge.weight);
-        }
+        // auto graph = std::make_shared<Graph>(bit_count, edges.size());
+        // for(const auto& edge : edges) {
+        //     graph->addEdge(edge.start, edge.end, edge.weight);
+        // }
 
-        return graph;
+        return func.instance.graph;
     }
 
     void update(const Parameters& activity_consts, Individual& individual, const std::vector<Bit>& bits, const Graph& graph) {
