@@ -33,13 +33,25 @@ public:
 
     double evaluate_impl(const Individual& individual) const override {
         double cut_size = 0.0;
-        const auto& edges = instance.graph->getEdges();
         const auto& bit_vector = individual.bit_vector;
-        for(const auto& edge : edges) {
-            if(bit_vector[edge.start] != bit_vector[edge.end] && bit_vector[edge.start] != BIT_NONE && bit_vector[edge.end] != BIT_NONE) {
-                cut_size += edge.weight;
+        for(int node = 0; node < individual.bit_vector.size(); ++node) {
+            if(bit_vector[node] == BIT_ONE) {
+                const auto& in_edges = instance.graph->getInEdges(node);
+                for(const auto& edge : in_edges) {
+                    if(bit_vector[edge->start] == BIT_ZERO) {
+                        cut_size += edge->weight;
+                    }
+                }
+
+                const auto& out_edges = instance.graph->getOutEdges(node);
+                for(const auto& edge : out_edges) {
+                    if(bit_vector[edge->end] == BIT_ZERO) {
+                        cut_size += edge->weight;
+                    }
+                }
             }
         }
+        
         return cut_size;
     }
 };
@@ -53,9 +65,10 @@ public:
         const auto& bit_vector = individual.bit_vector;
         for(int node = 0; node < bit_vector.size(); ++node) {
             if(bit_vector[node] == BIT_ONE) {
-                for(auto edge_ptr : instance.graph->getOutEdges(node)) {
-                    if(bit_vector[edge_ptr->end] == BIT_ZERO) {
-                        cut_size += edge_ptr->weight;
+                const auto& out_edges = instance.graph->getOutEdges(node);
+                for(const auto& edge : out_edges) {
+                    if(bit_vector[edge->end] == BIT_ZERO) {
+                        cut_size += edge->weight;
                     }
                 }
             }

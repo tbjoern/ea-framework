@@ -13,18 +13,18 @@ protected:
     Instance instance;
 
     ObjectiveFunctionTest()  {
-        Graph g{6,5};
+        std::shared_ptr<Graph> g = std::make_shared<Graph>(6,5);
 
-        g.addEdge(0,1);
-        g.addEdge(0,2);
-        g.addEdge(3,0);
-        g.addEdge(3,4);
-        g.addEdge(0,5);
+        g->addEdge(0,1);
+        g->addEdge(0,2);
+        g->addEdge(3,0);
+        g->addEdge(3,4);
+        g->addEdge(0,5);
 
         Individual start_assignment;
         start_assignment.bit_vector = std::vector<Bit>{BIT_ONE, BIT_ZERO, BIT_ZERO, BIT_ZERO, BIT_ZERO, BIT_ONE};
 
-        instance = Instance{std::make_shared<Graph>(std::move(g)), std::make_shared<Individual>(std::move(start_assignment))};
+        instance = Instance{g, std::make_shared<Individual>(std::move(start_assignment))};
     }
 };
 

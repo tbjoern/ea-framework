@@ -1,4 +1,6 @@
 #include <Individual.hpp>
+#include <Graph.hpp>
+#include <memory>
 
 namespace eaframework {
 
@@ -12,13 +14,11 @@ namespace eaframework {
             Parameters() : min(-100), max(100), start(0), inc(1), dec(1), decay_rate(0.95) {}
         };
 
-        typedef std::vector<std::vector<double>> Matrix;
+        void init(const Parameters& params, Individual& individual);
 
-        void init(Parameters params, Individual& individual);
+        std::shared_ptr<Graph> activityValues(int bit_count, ObjectiveFunction& func);
 
-        std::vector<std::vector<double>> activityValues(Individual& individual, ObjectiveFunction& func);
-
-        void update(Parameters activity_consts, Individual& individual, std::vector<Bit> bits, Matrix matrix);
+        void update(const Parameters& activity_consts, Individual& individual, const std::vector<Bit>& bits, const Graph& graph);
 
         void decay(Parameters activity_consts, Individual& individual);
     }

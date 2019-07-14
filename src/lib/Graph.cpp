@@ -10,6 +10,7 @@
 #include <iostream>
 #include <tuple>
 #include <limits>
+#include <memory>
 
 namespace {
 
@@ -25,16 +26,16 @@ static std::unordered_map<std::string, FileExtension> filename_map = {
 class FileReader {
 public:
   virtual ~FileReader(){};
-  virtual Graph readFile(std::string filename) = 0;
+  virtual std::shared_ptr<Graph> readFile(std::string filename) = 0;
 };
 
 class EdgeListReader : public FileReader {
 public:
-  Graph readFile(std::string filename) override {
+  std::shared_ptr<Graph> readFile(std::string filename) override {
     std::ifstream input_file(filename);
     int nodes, edges;
     input_file >> nodes >> edges;
-    Graph adj_list{nodes, edges};
+    std::shared_ptr<Graph> adj_list = std::make_shared<Graph>(nodes, edges);
 
     std::set<int> node_names;
     for (uint i = 0; i < edges; ++i) {
@@ -60,7 +61,7 @@ public:
       input_file >> source >> dest >> weight;
       source = node_alias[source];
       dest = node_alias[dest];
-      adj_list.addEdge(source, dest, weight);
+      adj_list->addEdge(source, dest, weight);
     }
     return adj_list;
   }
@@ -68,20 +69,20 @@ public:
 
 class MTXReader : public FileReader {
 public:
-  Graph readFile(std::string filename) override {
+  std::shared_ptr<Graph> readFile(std::string filename) override {
     std::ifstream input_file(filename);
     // first line is always a comment
     input_file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     int nodes, edges;
     input_file >> nodes >> nodes >> edges;
-    Graph adj_list{nodes, edges};
+    std::shared_ptr<Graph> adj_list = std::make_shared<Graph>(nodes, edges);
 
     for (uint i = 0; i < edges; ++i) {
       int source, dest;
       input_file >> source >> dest;
       // indices start at 1
       --source; --dest;
-      adj_list.addEdge(source, dest, 1);
+      adj_list->addEdge(source, dest, 1);
     }
     return adj_list;
   }
@@ -89,7 +90,7 @@ public:
 
 class NXEdgeListReader : public FileReader {
 public:
-  Graph readFile(std::string filename) override {
+  std::shared_ptr<Graph> readFile(std::string filename) override {
     std::ifstream input_file(filename);
     int largest_node = 0;
     int edge_count = 0;
@@ -114,7 +115,7 @@ public:
 
     // node indices start at 0, that means we have largest_node + 1 nodes in
     // total
-    Graph adj_list{largest_node + 1, edge_count};
+    std::shared_ptr<Graph> adj_list = std::make_shared<Graph>(largest_node + 1, edge_count);
 
     for (uint i = 0; i < edge_count; ++i) {
       int source, dest;
@@ -123,7 +124,7 @@ public:
         input_file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         continue;
       }
-      adj_list.addEdge(source, dest, 1);
+      adj_list->addEdge(source, dest, 1);
     }
     return adj_list;
   }
@@ -131,7 +132,7 @@ public:
 
 class CNFReader : public FileReader {
 public:
-  Graph readFile(std::string filename) override {
+  std::shared_ptr<Graph> readFile(std::string filename) override {
     std::ifstream input_file(filename);
     // first line is a comment
     input_file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -141,7 +142,7 @@ public:
     // p cnf <nodes> <edges>
     input_file >> dummy >> dummy >> nodes >> edges;
     // every vertex (literal) occurs twice, negative ones are negated
-    Graph adj_list{nodes * 2, edges};
+    std::shared_ptr<Graph> adj_list = std::make_shared<Graph>(nodes * 2, edges);
 
     for (uint i = 0; i < edges; ++i) {
       int source, dest, weight;
@@ -158,13 +159,13 @@ public:
       if (dest < 0) {
         dest = dest * -1 + nodes;
       }
-      adj_list.addEdge(source, dest, weight);
+      adj_list->addEdge(source, dest, weight);
     }
     return adj_list;
   }
 };
 
-Graph read_graph_impl(std::string basename, std::string extension) {
+std::shared_ptr<Graph> read_graph_impl(std::string basename, std::string extension) {
     FileReader *reader;
     if(filename_map.count(extension) == 0) {
         throw std::runtime_error("Unkown file extension " + extension + " of file " + basename + extension);
@@ -187,7 +188,7 @@ Graph read_graph_impl(std::string basename, std::string extension) {
     if(!file_exists(basename + extension)) {
       throw std::invalid_argument("File " + basename + extension + " does not exist or is not readable");
     }
-    Graph adj_list = reader->readFile(basename + extension);
+    std::shared_ptr<Graph> adj_list = reader->readFile(basename + extension);
     delete reader;
 
     return adj_list;
@@ -252,9 +253,8 @@ const Edgelist& Graph::getEdges() const {
 
 std::shared_ptr<Graph> read_graph(std::string basename, std::string extension) {
     auto graph = ::read_graph_impl(basename, extension);
-    auto graph_ptr = std::make_shared<Graph>(std::move(graph));
 
-    return graph_ptr;
+    return graph;
 }
 
 std::shared_ptr<Graph> read_graph(std::string filename) {

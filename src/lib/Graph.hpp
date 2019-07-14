@@ -20,9 +20,13 @@ class Graph {
 
 public:
     Graph() {}
+    Graph(int node_count) = delete; // resizing the edges vector will give you nullptrs
     Graph(int node_count, int edge_count) : edges(0), in_edges(node_count), out_edges(node_count) {
         edges.reserve(edge_count);
     }
+
+    Graph(const Graph&) = delete;
+    Graph& operator=(const Graph&) = delete;
 
     bool addEdge(int start, int end, int weight);
     bool addEdge(int start, int end);

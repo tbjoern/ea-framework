@@ -172,7 +172,7 @@ class PMUTActivity : public MutationOperator {
     double power_law_beta;
     activity::Parameters activity_params;
     std::unique_ptr<PowerLawGenerator> p_gen;
-    activity::Matrix matrix;
+    std::shared_ptr<Graph> graph;
 public:
     PMUTActivity(Seed s, activity::Parameters _activity_params, double _power_law_beta) : MutationOperator(s), power_law_beta(_power_law_beta), activity_params(_activity_params) {}
 
@@ -180,7 +180,7 @@ public:
         auto bitCount = individual.bit_vector.size();
 
         activity::init(activity_params, individual);
-        matrix = activity::activityValues(individual, ea->getObjectiveFunction());
+        graph = activity::activityValues(bitCount, ea->getObjectiveFunction());
 
         p_gen = std::make_unique<PowerLawGenerator>(bitCount, power_law_beta);
     }
@@ -203,7 +203,7 @@ public:
             copy->bit_vector[bit] = !copy->bit_vector[bit];
         }
 
-        activity::update(activity_params, *copy, bits_to_flip, matrix);
+        activity::update(activity_params, *copy, bits_to_flip, *graph);
         activity::decay(activity_params, *copy);
 
         return copy;
@@ -227,7 +227,7 @@ class UnifSigmoid : public MutationOperator {
     activity::Parameters activity_params;
     double sigmoid_smoothness;
     std::function<bool(int)> activity_sampler;
-    activity::Matrix matrix;
+    std::shared_ptr<Graph> graph;
 public:
     UnifSigmoid(Seed s,activity::Parameters _activity_params, double _sigmoid_smoothness) : MutationOperator(s), activity_params(_activity_params), sigmoid_smoothness(_sigmoid_smoothness) {}
 
@@ -235,7 +235,7 @@ public:
         auto bitCount = individual.bit_vector.size();
 
         activity::init(activity_params, individual);
-        matrix = activity::activityValues(individual, ea->getObjectiveFunction());
+        graph = activity::activityValues(bitCount, ea->getObjectiveFunction());
 
         activity_sampler = build_activity_sigmoid_sampler(bitCount);
     }
@@ -280,7 +280,7 @@ public:
             copy->bit_vector[bit] = !copy->bit_vector[bit];
         }
 
-        activity::update(activity_params, *copy, bits_to_flip, matrix);
+        activity::update(activity_params, *copy, bits_to_flip, *graph);
         activity::decay(activity_params, *copy);
 
         return copy;
