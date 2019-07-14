@@ -8,6 +8,8 @@ namespace eaframework {
         struct Parameters {
             int min, max, start, inc, dec;
             double decay_rate;
+
+            Parameters() : min(-100), max(100), start(0), inc(1), dec(1), decay_rate(0.95) {}
         };
 
         typedef std::vector<std::vector<double>> Matrix;
