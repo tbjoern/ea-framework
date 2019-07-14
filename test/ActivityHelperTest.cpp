@@ -47,17 +47,16 @@ TEST_F(ActivityHelperTest, InitsActivity) {
 
 TEST_F(ActivityHelperTest, CalculatesActivityValues) {
     Individual test = Individual(*(instance.start_assignment));
-
-    auto zero_individual = Individual();
-    zero_individual.bit_vector = std::vector<Bit>(test.bit_vector.size(), BIT_NONE);
+    
+    auto matrix = activity::activityValues(test, *maxdicut);
 
     for(int node = 0; node < 6; ++node) {
         for(int node2 = 0; node2 < 6; ++node2) {
             if(instance.graph->edgeExists(node, node2)) {
-                EXPECT_EQ(activity::activity_value(zero_individual, *maxdicut, node, node2), 1);
+                EXPECT_EQ(matrix[node][node2], 1);
             }
             else {
-                EXPECT_EQ(activity::activity_value(zero_individual, *maxdicut, node, node2), 0);
+                EXPECT_EQ(matrix[node][node2], 0);
             }
         }
     }
@@ -65,14 +64,13 @@ TEST_F(ActivityHelperTest, CalculatesActivityValues) {
 
 TEST_F(ActivityHelperTest, UpdatesActivityValues) {
     Individual test = Individual(*(instance.start_assignment));
-    auto zero_individual = Individual();
-    zero_individual.bit_vector = std::vector<Bit>(test.bit_vector.size(), BIT_NONE);
+    auto matrix = activity::activityValues(test, *maxdicut);
 
     activity::init(params, test);
     test.bit_vector[0] = BIT_ONE;
     test.bit_vector[1] = BIT_ONE;
 
-    activity::update(params, test, {0,1}, zero_individual, *maxdicut);
+    activity::update(params, test, {0,1}, matrix);
 
     auto& activity = test.data_vectors["activity"];
 
@@ -84,13 +82,13 @@ TEST_F(ActivityHelperTest, UpdatesActivityValues) {
     EXPECT_EQ(activity[5], params.start - params.dec);
 
     test.bit_vector[3] = BIT_ONE;
-    activity::update(params, test, {3}, zero_individual, *maxdicut);
+    activity::update(params, test, {3}, matrix);
     EXPECT_EQ(activity[0], params.start + params.inc);
     EXPECT_EQ(activity[4], params.start - params.dec);
 
     test.bit_vector[3] = BIT_ZERO;
     test.bit_vector[0] = BIT_ZERO;
-    activity::update(params, test, {0}, zero_individual, *maxdicut);
+    activity::update(params, test, {0}, matrix);
     EXPECT_EQ(activity[1], params.start); // stays the same
     EXPECT_EQ(activity[2], params.start - params.dec); // stays the same
     EXPECT_EQ(activity[3], params.start + params.inc);

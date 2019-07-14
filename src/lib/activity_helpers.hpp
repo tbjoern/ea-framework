@@ -14,12 +14,12 @@ namespace eaframework {
 
         typedef std::vector<std::vector<double>> Matrix;
 
-        void init(const Parameters& params, Individual& individual);
+        void init(Parameters params, Individual& individual);
 
-        double activity_value(Individual& zero_individual, ObjectiveFunction& func, Bit bit_a, Bit bit_b);
+        std::vector<std::vector<double>> activityValues(Individual& individual, ObjectiveFunction& func);
 
-        void update(const Parameters& activity_consts, Individual& individual, const std::vector<Bit>& bits, Individual& zero_individual, ObjectiveFunction& func);
+        void update(Parameters activity_consts, Individual& individual, std::vector<Bit> bits, Matrix matrix);
 
-        void decay(const Parameters& activity_consts, Individual& individual);
+        void decay(Parameters activity_consts, Individual& individual);
     }
 }
