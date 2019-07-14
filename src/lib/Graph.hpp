@@ -18,12 +18,13 @@ class Graph {
     Edgelist edges;
     std::vector<Edgepointers> in_edges;
     std::vector<Edgepointers> out_edges;
+    int edge_counter = 0;
 
 public:
     Graph() {}
     Graph(int node_count) = delete; // resizing the edges vector will give you nullptrs
     Graph(int node_count, int edge_count) : edges(0), in_edges(node_count), out_edges(node_count) {
-        edges.reserve(edge_count);
+        edges.resize(edge_count);
     }
 
     Graph(const Graph&) = delete;

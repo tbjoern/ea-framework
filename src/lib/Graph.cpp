@@ -202,8 +202,8 @@ bool Graph::addEdge(int start, int end, int weight) {
   if(edgeExists(start, end)) {
     return false;
   }
-  edges.push_back({start, end, weight});
-  Edge* e_ptr = &(edges.back());
+  edges[edge_counter] = {start, end, weight};
+  Edge* e_ptr = &edges[edge_counter++];
   out_edges[start].push_back(e_ptr);
   in_edges[end].push_back(e_ptr);
   return true;
