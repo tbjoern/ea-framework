@@ -25,6 +25,8 @@ static std::unordered_map<std::string, MutationOperatorType> mutation_operator_t
     {"unif", MutationOperatorType::UNIF},
     {"fmut", MutationOperatorType::FMUT},
     {"pmut", MutationOperatorType::PMUT},
+    {"pmutActivity", MutationOperatorType::PMUTActivity},
+    {"unifSigmoid", MutationOperatorType::UnifSigmoid},
 };
 
 template<typename T>
