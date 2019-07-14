@@ -30,7 +30,7 @@ public:
 
     const Individual& getBestIndividual() const;
     const Individual& getOffspring() const;
-    const ObjectiveFunction& getObjectiveFunction() const;
+    ObjectiveFunction& getObjectiveFunction() const;
     double getMutationTime() const;
     double getBestFitness() const;
     double getOffspringFitness() const;

@@ -8,6 +8,8 @@
 #include <random>
 #include <memory>
 #include <map>
+#include <functional>
+#include <sstream>
 
 namespace
 {
@@ -170,14 +172,17 @@ class PMUTActivity : public MutationOperator {
     double power_law_beta;
     activity::Parameters activity_params;
     std::unique_ptr<PowerLawGenerator> p_gen;
+    activity::Matrix matrix;
 public:
-    PMUTActivity(Seed s, double _power_law_beta, activity::Parameters _activity_params) : MutationOperator(s), power_law_beta(_power_law_beta), activity_params(_activity_params) {}
+    PMUTActivity(Seed s, activity::Parameters _activity_params, double _power_law_beta) : MutationOperator(s), power_law_beta(_power_law_beta), activity_params(_activity_params) {}
 
     void setup_initial_individual(Individual& individual) override {
         auto bitCount = individual.bit_vector.size();
-        p_gen = std::make_unique<PowerLawGenerator>(bitCount, power_law_beta);
 
         activity::init(activity_params, individual);
+        matrix = activity::activityValues(individual, ea->getObjectiveFunction());
+
+        p_gen = std::make_unique<PowerLawGenerator>(bitCount, power_law_beta);
     }
 
     std::shared_ptr<Individual> mutate(const Individual &parent) override
@@ -188,7 +193,7 @@ public:
         const auto& activity = parent.data_vectors.at("activity");
         auto dist = std::discrete_distribution<int>(activity.cbegin(), activity.cend());
 
-        std::vector<int> bits_to_flip;
+        std::vector<Bit> bits_to_flip;
         while(k) {
             int bit = dist(random_engine);
             bits_to_flip.push_back(bit);
@@ -198,13 +203,137 @@ public:
             copy->bit_vector[bit] = !copy->bit_vector[bit];
         }
 
+        activity::update(activity_params, *copy, bits_to_flip, matrix);
+        activity::decay(activity_params, *copy);
+
         return copy;
     }
 };
 
+struct BernoulliGenerator {
+  std::bernoulli_distribution b;
+  std::mt19937& _engine;
+
+  BernoulliGenerator(std::bernoulli_distribution _b, std::mt19937& _mt) : b(_b), _engine(_mt) {};
+
+  bool get() { return b(_engine); }
+};
+
+double sigmoid(double x, double smoothness) {
+    return 2 / (1 + exp(-1 * smoothness * x));
+}
+
+class UnifSigmoid : public MutationOperator {
+    activity::Parameters activity_params;
+    double sigmoid_smoothness;
+    std::function<bool(int)> activity_sampler;
+    activity::Matrix matrix;
+public:
+    UnifSigmoid(Seed s,activity::Parameters _activity_params, double _sigmoid_smoothness) : MutationOperator(s), activity_params(_activity_params), sigmoid_smoothness(_sigmoid_smoothness) {}
+
+    void setup_initial_individual(Individual& individual) override {
+        auto bitCount = individual.bit_vector.size();
+
+        activity::init(activity_params, individual);
+        matrix = activity::activityValues(individual, ea->getObjectiveFunction());
+
+        activity_sampler = build_activity_sigmoid_sampler(bitCount);
+    }
+
+    std::function<bool(int)> build_activity_sigmoid_sampler(int bitCount) {
+        std::unordered_map<int, BernoulliGenerator> act_to_sampler;
+        double max_p = 1.0 / 2, center_p = 1.0 / bitCount,
+                min_p = 1.0 / (bitCount * bitCount);
+        double upper_multiplier = max_p - center_p;
+        double lower_multiplier = center_p - min_p;
+        for (int activity = activity_params.min; activity <= activity_params.max;
+            ++activity) {
+            double sigmoid_value = sigmoid(activity, sigmoid_smoothness);
+            double probability = 0.0;
+            if (sigmoid_value > 1) {
+            sigmoid_value -= 1;
+            probability = upper_multiplier * sigmoid_value + center_p;
+            } else {
+            probability = lower_multiplier * sigmoid_value + min_p;
+            }
+            act_to_sampler.emplace(activity, BernoulliGenerator(std::bernoulli_distribution(probability), random_engine));
+        }
+        return [act_to_sampler](double activity) mutable {
+            return act_to_sampler.at(static_cast<int>(ceil(activity))).get();
+        };
+    }
+
+    std::shared_ptr<Individual> mutate(const Individual &parent) override
+    {
+        auto copy = std::make_shared<Individual>(parent);
+
+        const auto& activity = parent.data_vectors.at("activity");
+
+        std::vector<Bit> bits_to_flip;
+        for(int bit = 0; bit < copy->bit_vector.size(); ++bit) {
+            if(activity_sampler(activity[bit])) {
+                bits_to_flip.push_back(bit);
+            }
+        }
+
+        for(auto bit : bits_to_flip) {
+            copy->bit_vector[bit] = !copy->bit_vector[bit];
+        }
+
+        activity::update(activity_params, *copy, bits_to_flip, matrix);
+        activity::decay(activity_params, *copy);
+
+        return copy;
+    }
+};
+
+activity::Parameters parse_activity_parameters(const MutationOperatorConfig &config) {
+    activity::Parameters params;
+    for(const auto& param : config.parameters) {
+        if(param.name == "inc") {
+            params.inc = param.value;
+            continue;
+        }
+        if(param.name == "dec") {
+            params.dec = param.value;
+            continue;
+        }
+        if(param.name == "max") {
+            params.max = param.value;
+            continue;
+        }
+        if(param.name == "min") {
+            params.min = param.value;
+            continue;
+        }
+        if(param.name == "start") {
+            params.start = param.value;
+            continue;
+        }
+        if(param.name == "decay_rate") {
+            params.decay_rate = param.value;
+            continue;
+        }
+    }
+    return params;
+}
+
+const MutationOperatorParameter& find_param(std::string name, const MutationOperatorConfig &config) {
+    for(const auto& param : config.parameters) {
+        if(param.name == name) {
+            return param;
+        }
+    }
+    std::stringstream s;
+    s << "Could not find parameter " << name << std::endl;
+    throw std::runtime_error(s.str());
+}
+
 std::shared_ptr<MutationOperator> build_mutation_operator(const MutationOperatorConfig &config)
 {
     Seed s = ::rand();
+    double power_law_beta, sigmoid_smoothness;
+    activity::Parameters params;
     switch (config.type)
     {
     case MutationOperatorType::DEFAULT:
@@ -215,6 +344,14 @@ std::shared_ptr<MutationOperator> build_mutation_operator(const MutationOperator
         return std::make_shared<FMUT>(s, config.parameters[0].value);
     case MutationOperatorType::PMUT:
         return std::make_shared<PMUT>(s, config.parameters[0].value);
+    case MutationOperatorType::PMUTActivity:
+        params = parse_activity_parameters(config);
+        power_law_beta = find_param("power_law_beta", config).value;
+        return std::make_shared<PMUTActivity>(s, params, power_law_beta);
+    case MutationOperatorType::UnifSigmoid:
+        params = parse_activity_parameters(config);
+        sigmoid_smoothness = find_param("sigmoid_smoothness", config).value;
+        return std::make_shared<UnifSigmoid>(s, params, sigmoid_smoothness);
     default:
         throw std::invalid_argument("Unknown Operator Type");
     }

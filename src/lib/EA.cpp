@@ -64,7 +64,7 @@ const MutationOperator& EA::getMutator() const {
     return *mutator;
 }
 
-const ObjectiveFunction& EA::getObjectiveFunction() const {
+ObjectiveFunction& EA::getObjectiveFunction() const {
     return *objective_function;
 }
 

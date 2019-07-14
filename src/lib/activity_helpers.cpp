@@ -33,7 +33,7 @@ namespace activity {
         return matrix;
     }
 
-    void update(Parameters activity_consts, Individual& individual, std::vector<Bit> bits, std::vector<std::vector<double>> matrix) {
+    void update(Parameters activity_consts, Individual& individual, std::vector<Bit> bits, Matrix matrix) {
         auto& activity = individual.data_vectors["activity"];
         auto& bit_vector = individual.bit_vector;
         for (auto bit : bits) {
@@ -60,7 +60,7 @@ namespace activity {
         auto& activity = individual.data_vectors["activity"];
         auto& bit_vector = individual.bit_vector;
         for (auto& bit : bit_vector) {
-            activity[bit] *= activity_consts.decay_rate;
+            activity[bit] = (activity[bit] - activity_consts.start) * activity_consts.decay_rate + activity_consts.start;
         }
     }
 }

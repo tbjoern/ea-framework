@@ -10,6 +10,15 @@ using namespace eaframework;
 
 namespace {
 
+void setup_activity_parameters(MutationOperatorConfig& config) {
+    config.parameters.push_back({"inc", 1});
+    config.parameters.push_back({"dec", 1});
+    config.parameters.push_back({"max", 100});
+    config.parameters.push_back({"min", 1});
+    config.parameters.push_back({"start", 50});
+    config.parameters.push_back({"decay_rate", 0.95});
+}
+
 class MutationOperatorTest : public ::testing::Test {
 public:
     Instance instance;
@@ -49,6 +58,32 @@ TEST_F(MutationOperatorTest, FMUT) {
 TEST_F(MutationOperatorTest, PMUT) {
     config.type = MutationOperatorType::PMUT;
     config.parameters.push_back({"power_law_beta", 2.5});
+
+    auto mutation_operator = build_mutation_operator(config);
+    
+    auto ea = EA(maxcut, mutation_operator);
+
+    ea.make_initial_individual(instance);
+    ea.next_generation();
+}
+
+TEST_F(MutationOperatorTest, PMUTActivity) {
+    config.type = MutationOperatorType::PMUTActivity;
+    setup_activity_parameters(config);
+    config.parameters.push_back({"power_law_beta", 2.5});
+
+    auto mutation_operator = build_mutation_operator(config);
+    
+    auto ea = EA(maxcut, mutation_operator);
+
+    ea.make_initial_individual(instance);
+    ea.next_generation();
+}
+
+TEST_F(MutationOperatorTest, UnifSigmoid) {
+    config.type = MutationOperatorType::UnifSigmoid;
+    setup_activity_parameters(config);
+    config.parameters.push_back({"sigmoid_smoothness", 0.005});
 
     auto mutation_operator = build_mutation_operator(config);
     
