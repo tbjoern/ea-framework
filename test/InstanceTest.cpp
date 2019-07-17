@@ -28,12 +28,24 @@ TEST(Instance, ReadsEmptyAssignment) {
     ASSERT_EQ(assignment->bit_vector.size(), 4);
 }
 
-TEST(Instance, ReadsInstance) {
-    auto instance = read_instance("data/test.txt");
+TEST(Instance, ReadsInstanceWithStartAssignment) {
+    auto instance = read_instance("data/test.txt", true);
 
     ASSERT_EQ(instance.graph->node_count(), 4);
 
     ASSERT_EQ(instance.start_assignment->bit_vector.size(), 4);
+    EXPECT_EQ(instance.start_assignment->bit_vector[2], BIT_ONE);
+    EXPECT_EQ(instance.start_assignment->bit_vector[3], BIT_ONE);
+}
+
+TEST(Instance, ReadsInstanceWithoutStartAssignment) {
+    auto instance = read_instance("data/test.txt", false);
+
+    ASSERT_EQ(instance.graph->node_count(), 4);
+
+    ASSERT_EQ(instance.start_assignment->bit_vector.size(), 4);
+    EXPECT_EQ(instance.start_assignment->bit_vector[2], BIT_ZERO);
+    EXPECT_EQ(instance.start_assignment->bit_vector[3], BIT_ZERO);
 }
 
 

@@ -26,7 +26,7 @@ public:
     MutationOperatorConfig config;
 
     MutationOperatorTest() {
-        instance = read_instance("data/MutationOperatorTest/test.txt");
+        instance = read_instance("data/MutationOperatorTest/test.txt", true);
         maxcut = build_objective_function(ObjectiveFunctionType::MAXCUT, instance);
         config.id = 0;
     }

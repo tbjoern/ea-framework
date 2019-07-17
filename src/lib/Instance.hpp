@@ -15,6 +15,6 @@ struct Instance {
 };
 
 std::shared_ptr<Individual> read_start_assignment(std::string filename);
-Instance read_instance(std::string instance_name);
+Instance read_instance(std::string instance_name, bool use_start_assignment);
 
 }
