@@ -23,6 +23,7 @@ void execute_runs(std::string experiment_config_path, std::string instance_name)
 
     information_collector->write_header(std::cout);
 
+#pragma omp parallel for collapse(2)
     for(const auto& mutation_operator_config : experiment_config.mutation_operator_configs) {
         for(int run = 0; run < experiment_config.run_count; ++run) {
             int id = mutation_operator_config.id;
