@@ -37,11 +37,12 @@ class IterationDataCollector : public InformationCollector {
         double time;
         int objectiveFunctionCalls;
         int generation;
+        int flips;
     };
     std::unordered_map<int, std::vector<IterationData>> id_to_results;
 public:
     void write_header(std::ostream& stream) override {
-        stream << "id, run, generation, fitness, time, objcalls" << std::endl;
+        stream << "id, run, generation, fitness, time, objcalls, flips" << std::endl;
     }
 
     void generation_snapshot(int id, int run, int generation, const EA& ea) override {
@@ -55,7 +56,8 @@ public:
         auto objective_function_calls = objective_function.callCount();
         auto fitness = ea.getOffspringFitness();
         auto time = ea.getMutationTime();
-        results.push_back({fitness,time,objective_function_calls, generation});
+        auto flips = ea.getMutator().get_flip_count();
+        results.push_back({fitness,time,objective_function_calls, generation, flips});
     }
 
     void output_to_stream(std::ostream& stream) override {
@@ -63,7 +65,7 @@ public:
             int id = pair.first / 1000;
             int run = pair.first % 1000;
             for(const auto& data : pair.second) {
-                stream << id << "," << run << "," << data.generation << "," << data.fitness << "," << data.time << "," << data.objectiveFunctionCalls << std::endl;
+                stream << id << "," << run << "," << data.generation << "," << data.fitness << "," << data.time << "," << data.objectiveFunctionCalls << "," << data.flips << std::endl;
             }
         }
     }

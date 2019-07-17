@@ -11,6 +11,8 @@
 #include <functional>
 #include <sstream>
 
+#include <iostream>
+
 namespace
 {
 std::random_device rand;
@@ -79,7 +81,6 @@ public:
 class Unif : public MutationOperator
 {
     std::unique_ptr<std::bernoulli_distribution> dist;
-
 public:
     Unif(Seed s) : MutationOperator(s) {}
 
@@ -93,11 +94,13 @@ public:
     {
         auto copy = std::make_shared<Individual>(parent);
 
+        flip_count = 0;
         for (auto &bit : copy->bit_vector)
         {
             if ((*dist)(random_engine))
             {
                 bit = !bit;
+                ++flip_count;
             }
         }
         return copy;
@@ -123,11 +126,13 @@ public:
         double alpha = p_gen->get(random_engine);
         auto dist = std::bernoulli_distribution(alpha/bitCount);
 
+        flip_count = 0;
         for (auto &bit : copy->bit_vector) 
         {
             if (dist(random_engine)) 
             {
                 bit = !bit;
+                ++flip_count;
             }
         }
         return copy;
@@ -160,6 +165,7 @@ public:
             bits_to_flip.push_back(bit);
             --k;
         }
+        flip_count = bits_to_flip.size();
         for(auto bit : bits_to_flip) {
             copy->bit_vector[bit] = !copy->bit_vector[bit];
         }
@@ -199,6 +205,7 @@ public:
             bits_to_flip.push_back(bit);
             --k;
         }
+        flip_count = bits_to_flip.size();
         for(auto bit : bits_to_flip) {
             copy->bit_vector[bit] = !copy->bit_vector[bit];
         }
@@ -275,7 +282,7 @@ public:
                 bits_to_flip.push_back(bit);
             }
         }
-
+        flip_count = bits_to_flip.size();
         for(auto bit : bits_to_flip) {
             copy->bit_vector[bit] = !copy->bit_vector[bit];
         }
@@ -332,6 +339,7 @@ const MutationOperatorParameter& find_param(std::string name, const MutationOper
 std::shared_ptr<MutationOperator> build_mutation_operator(const MutationOperatorConfig &config)
 {
     Seed s = ::rand();
+    // std::cout << s << std::endl;
     double power_law_beta, sigmoid_smoothness;
     activity::Parameters params;
     switch (config.type)
