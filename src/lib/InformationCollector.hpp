@@ -18,6 +18,8 @@ public:
     virtual void generation_snapshot(int id, int run, int generation, const EA&) = 0;
 
     virtual void output_to_stream(std::ostream&) = 0;
+
+    virtual void clear() = 0;
 };
 
 // we only need one information collector, but we want to make use of polymorphism

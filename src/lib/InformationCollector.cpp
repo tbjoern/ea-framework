@@ -22,6 +22,10 @@ public:
             stream << result << std::endl;
         }
     }
+
+    void clear() override {
+        results.clear();
+    }
 };
 
 class IterationDataCollector : public InformationCollector {
@@ -40,7 +44,6 @@ public:
         }
         auto& results = id_to_results[index];
 
-        const auto& mutator = ea.getMutator();
         const auto& objective_function = ea.getObjectiveFunction();
         auto objective_function_calls = objective_function.callCount();
         auto fitness = ea.getOffspringFitness();
@@ -57,6 +60,10 @@ public:
                 stream << id << "," << run << "," << data.generation << "," << data.fitness << "," << data.time << "," << data.objectiveFunctionCalls << std::endl;
             }
         }
+    }
+
+    void clear() override {
+        id_to_results.clear();
     }
 };
 

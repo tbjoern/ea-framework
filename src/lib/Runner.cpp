@@ -9,6 +9,7 @@
 #include <ObjectiveFunction.hpp>
 #include <MutationOperator.hpp>
 #include <EA.hpp>
+#include <mutex>
 
 namespace eaframework {
 
@@ -17,6 +18,8 @@ void execute_runs(std::string experiment_config_path, std::string instance_name)
     const auto instance = read_instance(instance_name);
 
     auto information_collector = build_information_collector(experiment_config.information_collector_type);
+
+    std::mutex m;
 
 #pragma omp parallel for collapse(2)
     for(const auto& mutation_operator_config : experiment_config.mutation_operator_configs) {
@@ -28,12 +31,14 @@ void execute_runs(std::string experiment_config_path, std::string instance_name)
             ea.make_initial_individual(instance);
             for(int generation = 0; generation < experiment_config.generation_count; ++generation) {
                 ea.next_generation();
+                std::lock_guard l(m);
                 information_collector->generation_snapshot(id, run, generation, ea);
             }
+            std::lock_guard l(m);
+            information_collector->output_to_stream(std::cout);
+            information_collector->clear();
         }
     }
-
-    information_collector->output_to_stream(std::cout);
 }
 
 }
