@@ -24,7 +24,7 @@ public:
     
     EA(std::shared_ptr<ObjectiveFunction>, std::shared_ptr<MutationOperator>);
 
-    void make_initial_individual(Instance&);
+    void make_initial_individual(const Instance&);
 
     void next_generation();
 

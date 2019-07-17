@@ -13,8 +13,8 @@
 namespace eaframework {
 
 void execute_runs(std::string experiment_config_path, std::string instance_name) {
-    auto experiment_config = read_experiment_configuration(experiment_config_path);
-    auto instance = read_instance(instance_name);
+    const auto experiment_config = read_experiment_configuration(experiment_config_path);
+    const auto instance = read_instance(instance_name);
 
     auto information_collector = build_information_collector(experiment_config.information_collector_type);
 

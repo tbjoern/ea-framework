@@ -28,7 +28,7 @@ namespace eaframework {
 //     const Individual& getPreviousIndividual() const;
 // };
 
-void EA::make_initial_individual(Instance& instance) {
+void EA::make_initial_individual(const Instance& instance) {
     auto start_assignment_copy = Individual(*(instance.start_assignment));
     mutator->setup_initial_individual(start_assignment_copy);
     best_individual = std::make_shared<Individual>(std::move(start_assignment_copy));
