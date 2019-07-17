@@ -11,6 +11,9 @@ namespace eaframework {
 class DummyCollector : public InformationCollector {
     std::vector<double> results;
 public:
+    void write_header(std::ostream& stream) override {
+       
+    }
     void generation_snapshot(int id, int run, int generation, const EA& ea) override {
         const auto& mutator = ea.getMutator();
         auto fitness = ea.getOffspringFitness();
@@ -37,6 +40,10 @@ class IterationDataCollector : public InformationCollector {
     };
     std::unordered_map<int, std::vector<IterationData>> id_to_results;
 public:
+    void write_header(std::ostream& stream) override {
+        stream << "id, run, generation, fitness, time, objcalls" << std::endl;
+    }
+
     void generation_snapshot(int id, int run, int generation, const EA& ea) override {
         int index = id * 1000 + run;
         if(id_to_results.count(index) == 0) {
@@ -52,7 +59,6 @@ public:
     }
 
     void output_to_stream(std::ostream& stream) override {
-        stream << "id, run, generation, fitness, time, objcalls" << std::endl;
         for(const auto& pair : id_to_results) {
             int id = pair.first / 1000;
             int run = pair.first % 1000;

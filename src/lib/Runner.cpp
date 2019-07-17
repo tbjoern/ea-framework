@@ -21,7 +21,8 @@ void execute_runs(std::string experiment_config_path, std::string instance_name)
 
     std::mutex m;
 
-#pragma omp parallel for collapse(2)
+    information_collector->write_header(std::cout);
+
     for(const auto& mutation_operator_config : experiment_config.mutation_operator_configs) {
         for(int run = 0; run < experiment_config.run_count; ++run) {
             int id = mutation_operator_config.id;
@@ -31,14 +32,17 @@ void execute_runs(std::string experiment_config_path, std::string instance_name)
             ea.make_initial_individual(instance);
             for(int generation = 0; generation < experiment_config.generation_count; ++generation) {
                 ea.next_generation();
-                std::lock_guard l(m);
+                std::lock_guard<std::mutex> l(m);
                 information_collector->generation_snapshot(id, run, generation, ea);
+                if(generation % 1000 == 0) {
+                    information_collector->output_to_stream(std::cout);
+                    information_collector->clear();
+                }
             }
-            std::lock_guard l(m);
-            information_collector->output_to_stream(std::cout);
-            information_collector->clear();
         }
     }
+
+    information_collector->output_to_stream(std::cout);
 }
 
 }
