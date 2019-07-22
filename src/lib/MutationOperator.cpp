@@ -15,7 +15,6 @@
 
 namespace
 {
-std::random_device rand;
 
 template <typename T> int sgn(T val) {
     return (T(0) < val) - (val < T(0));
@@ -338,7 +337,8 @@ const MutationOperatorParameter& find_param(std::string name, const MutationOper
 
 std::shared_ptr<MutationOperator> build_mutation_operator(const MutationOperatorConfig &config)
 {
-    Seed s = ::rand();
+    std::random_device rand;
+    Seed s = rand();
     // std::cout << s << std::endl;
     double power_law_beta, sigmoid_smoothness;
     activity::Parameters params;
