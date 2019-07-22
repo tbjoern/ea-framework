@@ -32,6 +32,18 @@ public:
     }
 };
 
+TEST_F(MutationOperatorTest, CopiesParent) {
+    config.type = MutationOperatorType::DEFAULT;
+
+    auto mutation_operator = build_mutation_operator(config);
+
+    auto individual = instance.start_assignment;
+
+    auto offspring = mutation_operator->mutate(*individual);
+
+    EXPECT_NE(individual->bit_vector[0], offspring->bit_vector[0]);
+}
+
 TEST_F(MutationOperatorTest, Unif) {
     config.type = MutationOperatorType::UNIF;
 
