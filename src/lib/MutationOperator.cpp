@@ -94,12 +94,16 @@ public:
         auto copy = std::make_shared<Individual>(parent);
 
         flip_count = 0;
-        for (auto &bit : copy->bit_vector)
+        int retry_count = 20;
+        while(flip_count == 0 && retry_count-- > 0)
         {
-            if ((*dist)(random_engine))
+            for (auto &bit : copy->bit_vector)
             {
-                bit = !bit;
-                ++flip_count;
+                if ((*dist)(random_engine))
+                {
+                    bit = !bit;
+                    ++flip_count;
+                }
             }
         }
         return copy;
@@ -122,7 +126,7 @@ public:
     {
         auto copy = std::make_shared<Individual>(parent);
         auto bitCount = copy->bit_vector.size();
-        double alpha = p_gen->get(random_engine);
+        double alpha = p_gen->get(random_engine) + 1;
         auto dist = std::bernoulli_distribution(alpha/bitCount);
 
         flip_count = 0;
@@ -156,7 +160,7 @@ public:
     std::shared_ptr<Individual> mutate(const Individual &parent) override
     {
         auto copy = std::make_shared<Individual>(parent);
-        auto k = p_gen->get(random_engine);
+        auto k = p_gen->get(random_engine) + 1;
 
         std::vector<int> bits_to_flip;
         while(k) {
@@ -193,7 +197,7 @@ public:
     std::shared_ptr<Individual> mutate(const Individual &parent) override
     {
         auto copy = std::make_shared<Individual>(parent);
-        auto k = p_gen->get(random_engine);
+        auto k = p_gen->get(random_engine) + 1;
 
         const auto& activity = parent.data_vectors.at("activity");
         auto dist = std::discrete_distribution<int>(activity.cbegin(), activity.cend());
@@ -276,9 +280,12 @@ public:
         const auto& activity = parent.data_vectors.at("activity");
 
         std::vector<Bit> bits_to_flip;
-        for(int bit = 0; bit < copy->bit_vector.size(); ++bit) {
-            if(activity_sampler(activity[bit])) {
-                bits_to_flip.push_back(bit);
+        int retry_count = 20;
+        while(bits_to_flip.size() == 0 && retry_count-- > 0) {
+            for(int bit = 0; bit < copy->bit_vector.size(); ++bit) {
+                if(activity_sampler(activity[bit])) {
+                    bits_to_flip.push_back(bit);
+                }
             }
         }
         flip_count = bits_to_flip.size();
