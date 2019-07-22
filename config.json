@@ -44,9 +44,9 @@
 			"type": "unifSigmoid",
 			"id": 4,
 			"arguments": {
-				"max": 100,
-				"min": 1,
-				"start": 50,
+				"max": 1000,
+				"min": -1000,
+				"start": 0,
 				"inc": 1,
 				"dec": 1,
 				"decay_rate": 0.95,
