@@ -12,7 +12,7 @@ def start_assignment(path, filename):
     input_file_path = os.path.join(path, filename)
     output_file_path = os.path.join(path, name + ASS_EXT)
     with open(output_file_path, 'w') as f:
-        subprocess.run([START_ASSIGNMENT_BIN, '-i', f'{input_file_path}'], stdout=f)
+        subprocess.run([START_ASSIGNMENT_BIN, '-i', input_file_path], stdout=f)
 
 def main():
     import argparse
@@ -24,7 +24,7 @@ def main():
     args = parser.parse_args()
 
     if not os.path.isdir(args.instance_dir):
-        print(f"Path {instance_dir} is not a directory")
+        print("Path is not a directory")
         exit(1)
 
     for path, subdirs, files in os.walk(args.instance_dir):
