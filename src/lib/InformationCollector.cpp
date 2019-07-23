@@ -33,7 +33,7 @@ public:
 
 class IterationDataCollector : public InformationCollector {
     struct IterationData {
-        double fitness;
+        int fitness;
         double time;
         int objectiveFunctionCalls;
         int generation;

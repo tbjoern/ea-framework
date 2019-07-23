@@ -5,7 +5,7 @@
 
 namespace eaframework {
 
-double ObjectiveFunction::evaluate(const Individual& individual) {
+int ObjectiveFunction::evaluate(const Individual& individual) {
     ++call_count;
     return evaluate_impl(individual);
 }
@@ -22,8 +22,8 @@ class TestFunction : public ObjectiveFunction {
 public:
     TestFunction(const Instance& p_instance) : ObjectiveFunction(p_instance) {}
 
-    double evaluate_impl(const Individual& individual) const override {
-        return 0.0;
+    int evaluate_impl(const Individual& individual) const override {
+        return 0;
     }
 };
 
@@ -31,27 +31,24 @@ class Maxcut : public ObjectiveFunction {
 public:
     Maxcut(const Instance& p_instance) : ObjectiveFunction(p_instance) {}
 
-    double evaluate_impl(const Individual& individual) const override {
-        double cut_size = 0.0;
+    int evaluate_impl(const Individual& individual) const override {
+        int cut_size = 0;
         const auto& bit_vector = individual.bit_vector;
         for(int node = 0; node < individual.bit_vector.size(); ++node) {
             if(bit_vector[node] == BIT_ONE) {
                 const auto& in_edges = instance.graph->getInEdges(node);
-                for(const auto& edge : in_edges) {
-                    if(bit_vector[edge->start] == BIT_ZERO) {
-                        cut_size += edge->weight;
-                    }
+                const auto in_edges_size = in_edges.size();
+                for(int edge = 0; edge < in_edges_size; ++edge) {
+                    cut_size += in_edges[edge]->weight * (bit_vector[in_edges[edge]->start] == BIT_ZERO);
                 }
 
                 const auto& out_edges = instance.graph->getOutEdges(node);
-                for(const auto& edge : out_edges) {
-                    if(bit_vector[edge->end] == BIT_ZERO) {
-                        cut_size += edge->weight;
-                    }
+                const auto out_edges_size = out_edges.size();
+                for(int edge = 0; edge < out_edges_size; ++edge) {
+                    cut_size += out_edges[edge]->weight * (bit_vector[out_edges[edge]->end] == BIT_ZERO);
                 }
             }
         }
-        
         return cut_size;
     }
 };
@@ -60,16 +57,15 @@ class Maxdicut : public ObjectiveFunction {
 public:
     Maxdicut(const Instance& p_instance) : ObjectiveFunction(p_instance) {}
 
-    double evaluate_impl(const Individual& individual) const override {
-        double cut_size = 0.0;
+    int evaluate_impl(const Individual& individual) const override {
+        int cut_size = 0;
         const auto& bit_vector = individual.bit_vector;
         for(int node = 0; node < bit_vector.size(); ++node) {
             if(bit_vector[node] == BIT_ONE) {
                 const auto& out_edges = instance.graph->getOutEdges(node);
-                for(const auto& edge : out_edges) {
-                    if(bit_vector[edge->end] == BIT_ZERO) {
-                        cut_size += edge->weight;
-                    }
+                const auto out_edges_size = out_edges.size();
+                for(int edge = 0; edge < out_edges_size; ++edge) {
+                    cut_size += out_edges[edge]->weight * (bit_vector[out_edges[edge]->end] == BIT_ZERO);
                 }
             }
         }

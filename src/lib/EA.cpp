@@ -68,11 +68,11 @@ ObjectiveFunction& EA::getObjectiveFunction() const {
     return *objective_function;
 }
 
-double EA::getBestFitness() const {
+int EA::getBestFitness() const {
     return best_fitness;
 }
 
-double EA::getOffspringFitness() const {
+int EA::getOffspringFitness() const {
     return offspring_fitness;
 }
 

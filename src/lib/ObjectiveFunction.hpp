@@ -16,11 +16,11 @@ protected:
     const Instance& instance;
     ObjectiveFunction(const Instance& _instance) : instance(_instance), call_count(0) {}
 
-    virtual double evaluate_impl(const Individual&) const = 0;
+    virtual int evaluate_impl(const Individual&) const = 0;
 
     friend std::shared_ptr<const Graph> activity::activityValues(int bit_count, ObjectiveFunction& func);
 public:
-    double evaluate(const Individual&);
+    int evaluate(const Individual&);
     int callCount() const;
     int bitVectorSize() const;
 
