@@ -42,7 +42,7 @@ class IterationDataCollector : public InformationCollector {
     std::unordered_map<int, std::vector<IterationData>> id_to_results;
 public:
     void write_header(std::ostream& stream) override {
-        stream << "id, run, generation, fitness, time, objcalls, flips" << std::endl;
+        stream << "id, run, generation, fitness, mutation_time, objcalls, flips" << std::endl;
     }
 
     void generation_snapshot(int id, int run, int generation, const EA& ea) override {
