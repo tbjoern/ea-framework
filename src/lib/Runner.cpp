@@ -34,9 +34,12 @@ void execute_runs(std::string experiment_config_path, std::string instance_name)
     const int64_t time_limit = experiment_config.time_limit * 60 * 1000; // from min to ms
     auto since_start = std::chrono::high_resolution_clock::now();
 
+    const auto config_count = experiment_config.mutation_operator_configs.size();
+    const auto run_count = experiment_config.run_count;
 #pragma omp parallel for collapse(2)
-    for(const auto& mutation_operator_config : experiment_config.mutation_operator_configs) {
-        for(int run = 0; run < experiment_config.run_count; ++run) {
+    for(int c = 0; c < config_count; ++c) {
+        for(int run = 0; run < run_count; ++run) {
+            const auto& mutation_operator_config = experiment_config.mutation_operator_configs[c];
             int id = mutation_operator_config.id;
             auto mutation_operator = build_mutation_operator(mutation_operator_config);
             auto objective_function = build_objective_function(experiment_config.objective_function_type, instance);
