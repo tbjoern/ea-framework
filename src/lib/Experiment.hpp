@@ -25,7 +25,7 @@ struct MutationOperatorConfig {
 
 struct ExperimentConfig {
     int run_count;
-    unsigned long long computation_time_budget;
+    unsigned int time_limit;
     bool use_predefined_start;
     ObjectiveFunctionType objective_function_type;
     InformationCollectorType information_collector_type;

@@ -48,7 +48,7 @@ ExperimentConfig read_experiment_configuration(std::string path) {
     cfg_file >> json_cfg;
 
     experiment_config.generation_count = get_value(json_cfg, "generation_count", 1);
-    experiment_config.computation_time_budget = get_value(json_cfg, "generation_time_budget", 0);
+    experiment_config.time_limit = get_value(json_cfg, "time_limit", 0);
     auto info_type_string = get_value<std::string>(json_cfg, "information_collector_type", "default");
     experiment_config.information_collector_type = information_collector_type_from_string[info_type_string];
     experiment_config.run_count = get_value(json_cfg, "run_count", 1);

@@ -15,7 +15,7 @@ TEST(Experiment, ReadsConfigFile) {
     auto experiment_config = read_experiment_configuration(config_path);
 
     EXPECT_EQ(experiment_config.generation_count, 100);
-    EXPECT_EQ(experiment_config.computation_time_budget, 1);
+    EXPECT_EQ(experiment_config.time_limit, 1);
     EXPECT_EQ(experiment_config.information_collector_type, InformationCollectorType::DEFAULT);
     EXPECT_EQ(experiment_config.run_count, 1);
     EXPECT_EQ(experiment_config.objective_function_type, ObjectiveFunctionType::MAXCUT);
