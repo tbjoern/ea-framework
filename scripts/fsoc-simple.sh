@@ -1,6 +1,6 @@
 #!/bin/bash
 
-fsoc_processor_count=60
+fsoc_processor_count=50
 instance_dir=$1
 config=$2
 cpus=$3

@@ -27,7 +27,7 @@ do
     echo "${exec_name} -i ${file} -c ${config_file}  > $result_dir/${logfile}"
     echo "$result_dir/${logfile}"
     install -D -m 644 /dev/null "$result_dir/${logfile}"
-    srun -n1 --exclusive --output "$result_dir/${logfile}" ${exec_name} -i ${file} -c ${config_file} &
+    srun -N1 -n1 --exclusive --output "$result_dir/${logfile}" ${exec_name} -i ${file} -c ${config_file} &
 done
 
 wait
