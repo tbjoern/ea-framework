@@ -91,7 +91,7 @@ def main():
             iteration = int(row['generation'])
             run = int(row['run'])
             fitness[dataset][run][iteration] = row['fitness']
-            time[dataset][run][iteration] = row['time']
+            time[dataset][run][iteration] = row['mutation_time']
             objcalls[dataset][run][iteration] = row['objcalls']
             flips[dataset][run][iteration] = row['flips']
     
