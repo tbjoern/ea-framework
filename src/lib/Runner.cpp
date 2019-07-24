@@ -11,6 +11,7 @@
 #include <EA.hpp>
 #include <mutex>
 #include <chrono>
+#include <omp.h>
 
 namespace {
     int64_t time(std::chrono::_V2::system_clock::time_point start) {
