@@ -106,7 +106,7 @@ def main():
     x = prompt_for_axis(axes, axes_labels)
     y = prompt_for_axis(axes, axes_labels)
 
-    plot_labels = ['b-', 'r-', 'g-']
+    plot_labels = ['b-', 'r-', 'g-', 'y-', 'c-', 'm-', 'k-']
     
     f = plt.figure(1)
     sub = f.add_subplot(111)
