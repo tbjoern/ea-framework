@@ -96,7 +96,7 @@ def main():
             flips[dataset][run][iteration] = row['flips']
     
     running_maximum(fitness)
-    fill_gaps(time)
+    running_sum(time)
     fill_gaps(objcalls)
     fill_gaps(flips)
 
