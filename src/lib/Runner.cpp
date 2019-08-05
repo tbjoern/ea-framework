@@ -50,10 +50,6 @@ void execute_runs(std::string experiment_config_path, std::string instance_name)
                 ea.next_generation();
                 std::lock_guard<std::mutex> l(m);
                 information_collector->generation_snapshot(id, run, generation, ea);
-                if(generation % 1000 == 0) {
-                    information_collector->output_to_stream(std::cout);
-                    information_collector->clear();
-                }
             }
         }
     }

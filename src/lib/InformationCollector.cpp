@@ -47,7 +47,24 @@ public:
         stream << "id, run, generation, fitness, mutation_time, objcalls, flips, improved" << std::endl;
     }
 
+    bool record_generation(int generation) {
+        if( generation < 100 )
+        {
+            return true;
+        } else if ( generation < 1000 && generation % 10 == 0 )
+        {
+            return true;
+        } else if ( generation % 100 == 0 )
+        {
+            return true;
+        }
+        return false;
+    }
+
     void generation_snapshot(int id, int run, int generation, const EA& ea) override {
+        if(!record_generation(generation)) {
+            return;
+        }
         int index = id * 1000 + run;
         if(id_to_results.count(index) == 0) {
             id_to_results[index] = std::vector<IterationData>();
