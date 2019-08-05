@@ -41,6 +41,7 @@ class IterationDataCollector : public InformationCollector {
         bool generationImproved;
     };
     std::unordered_map<int, std::vector<IterationData>> id_to_results;
+    std::unordered_map<int, IterationData> id_to_last_result;
 public:
     void write_header(std::ostream& stream) override {
         stream << "id, run, generation, fitness, mutation_time, objcalls, flips, improved" << std::endl;
@@ -50,6 +51,9 @@ public:
         int index = id * 1000 + run;
         if(id_to_results.count(index) == 0) {
             id_to_results[index] = std::vector<IterationData>();
+        }
+        if(id_to_last_result.count(index) == 0) {
+            id_to_last_result[index] = IterationData();
         }
         auto& results = id_to_results[index];
 
@@ -66,8 +70,15 @@ public:
         for(const auto& pair : id_to_results) {
             int id = pair.first / 1000;
             int run = pair.first % 1000;
+            auto& last_result = id_to_last_result[pair.first];
             for(const auto& data : pair.second) {
-                stream << id << "," << run << "," << data.generation << "," << data.fitness << "," << data.time << "," << data.objectiveFunctionCalls << "," << data.flips << "," << data.generationImproved << std::endl;
+                last_result.generation = data.generation;
+                last_result.fitness = std::max(last_result.fitness, data.fitness);
+                last_result.time += data.time;
+                last_result.objectiveFunctionCalls = data.objectiveFunctionCalls;
+                last_result.flips = data.flips;
+                last_result.generationImproved = data.generationImproved;
+                stream << id << "," << run << "," << last_result.generation << "," << last_result.fitness << "," << last_result.time << "," << last_result.objectiveFunctionCalls << "," << last_result.flips << "," << last_result.generationImproved << std::endl;
             }
         }
     }
