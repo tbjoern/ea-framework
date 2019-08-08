@@ -70,7 +70,7 @@ def main():
 
     config = read_config(args.config)
     algos = len(config["mutators"])
-    gens = int(config["generation_count"]) + 1
+    gens = int(config["generations"]) + 1
     run_count = int(config["run_count"])
 
     plot_legend = ["" for i in range(algos)]

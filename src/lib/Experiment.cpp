@@ -5,6 +5,7 @@
 #include <InformationCollector.hpp>
 #include <ObjectiveFunction.hpp>
 #include <MutationOperator.hpp>
+#include <Instance.hpp>
 
 using json = nlohmann::json;
 
@@ -47,14 +48,15 @@ ExperimentConfig read_experiment_configuration(std::string path) {
     json json_cfg;
     cfg_file >> json_cfg;
 
-    experiment_config.generation_count = get_value(json_cfg, "generation_count", 1);
+    experiment_config.generations = get_value(json_cfg, "generations", 1);
     experiment_config.time_limit = get_value(json_cfg, "time_limit", 0);
     auto info_type_string = get_value<std::string>(json_cfg, "information_collector_type", "default");
     experiment_config.information_collector_type = information_collector_type_from_string[info_type_string];
     experiment_config.run_count = get_value(json_cfg, "run_count", 1);
     auto objective_function_type_string = get_value<std::string>(json_cfg, "objective_function", "MAXCUT");
     experiment_config.objective_function_type = objective_function_type_from_string[objective_function_type_string];
-    experiment_config.use_predefined_start = get_value(json_cfg, "use_predefined_start", false);
+    int start_type_raw = get_value(json_cfg, "start_type", 0);
+    experiment_config.start_type = static_cast<StartType>(start_type_raw);
 
     for (auto &mutator : json_cfg["mutators"]) {
         auto cfg = MutationOperatorConfig{};

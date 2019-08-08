@@ -10,6 +10,7 @@ class Instance;
 enum class ObjectiveFunctionType;
 enum class InformationCollectorType;
 enum class MutationOperatorType;
+enum class StartType;
 
 struct MutationOperatorParameter {
     std::string name;
@@ -26,10 +27,10 @@ struct MutationOperatorConfig {
 struct ExperimentConfig {
     int run_count;
     unsigned int time_limit;
-    bool use_predefined_start;
+    StartType start_type;
     ObjectiveFunctionType objective_function_type;
     InformationCollectorType information_collector_type;
-    int generation_count;
+    int generations;
     std::shared_ptr<const Instance> instance;
     std::vector<MutationOperatorConfig> mutation_operator_configs;
 };

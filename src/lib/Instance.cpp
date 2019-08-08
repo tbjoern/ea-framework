@@ -35,21 +35,30 @@ std::shared_ptr<Individual> read_start_assignment(std::string filename) {
     return individual;
 }
 
-Instance read_instance(std::string instance_name, bool use_start_assignment) {
+Instance read_instance(std::string instance_name, StartType start_type) {
     std::string basename, extension;
     std::tie(basename, extension) = split_filename(instance_name);
 
     auto graph = read_graph(basename, extension);
     std::shared_ptr<Individual> start_assignment;
-    if(use_start_assignment) {
-        start_assignment = read_start_assignment(basename + ".assignment");
-    }
-    else {
-        start_assignment = std::make_shared<Individual>();
-        start_assignment->bit_vector.resize(graph->node_count());
-        for(auto& bit : start_assignment->bit_vector) {
-            bit = BIT_ZERO;
-        }
+    switch(start_type) {
+        case StartType::EMPTY:
+            start_assignment = std::make_shared<Individual>();
+            start_assignment->bit_vector.resize(graph->node_count());
+            for(auto& bit : start_assignment->bit_vector) {
+                bit = BIT_ZERO;
+            }
+            break;
+        case StartType::RANDOM:
+            start_assignment = read_start_assignment(basename + ".assignment");
+            break;
+        case StartType::FULL:
+            start_assignment = std::make_shared<Individual>();
+            start_assignment->bit_vector.resize(graph->node_count());
+            for(auto& bit : start_assignment->bit_vector) {
+                bit = BIT_ONE;
+            }
+            break;
     }
 
     return Instance{graph, start_assignment};

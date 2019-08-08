@@ -1,10 +1,10 @@
 {
-	"generation_count": 100,
+	"generations": 100,
 	"time_limit": 1,
 	"information_collector_type": "iteration_data",
 	"run_count": 1,
 	"objective_function": "MAXCUT",
-	"use_predefined_start": true,
+	"start_type": 0,
 	"mutators": [
 		{
 			"type": "unif",

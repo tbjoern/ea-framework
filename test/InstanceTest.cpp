@@ -28,8 +28,8 @@ TEST(Instance, ReadsEmptyAssignment) {
     ASSERT_EQ(assignment->bit_vector.size(), 4);
 }
 
-TEST(Instance, ReadsInstanceWithStartAssignment) {
-    auto instance = read_instance("data/test.txt", true);
+TEST(Instance, ReadsInstanceWithRandomStartAssignment) {
+    auto instance = read_instance("data/test.txt", StartType::RANDOM);
 
     ASSERT_EQ(instance.graph->node_count(), 4);
 
@@ -39,7 +39,7 @@ TEST(Instance, ReadsInstanceWithStartAssignment) {
 }
 
 TEST(Instance, ReadsInstanceWithoutStartAssignment) {
-    auto instance = read_instance("data/test.txt", false);
+    auto instance = read_instance("data/test.txt", StartType::EMPTY);
 
     ASSERT_EQ(instance.graph->node_count(), 4);
 
@@ -48,5 +48,14 @@ TEST(Instance, ReadsInstanceWithoutStartAssignment) {
     EXPECT_EQ(instance.start_assignment->bit_vector[3], BIT_ZERO);
 }
 
+TEST(Instance, ReadsInstanceWithFullStartAssignment) {
+    auto instance = read_instance("data/test.txt", StartType::FULL);
+
+    ASSERT_EQ(instance.graph->node_count(), 4);
+
+    ASSERT_EQ(instance.start_assignment->bit_vector.size(), 4);
+    EXPECT_EQ(instance.start_assignment->bit_vector[2], BIT_ONE);
+    EXPECT_EQ(instance.start_assignment->bit_vector[3], BIT_ONE);
+}
 
 }

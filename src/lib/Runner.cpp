@@ -24,7 +24,7 @@ namespace eaframework {
 
 void execute_runs(std::string experiment_config_path, std::string instance_name) {
     const auto experiment_config = read_experiment_configuration(experiment_config_path);
-    const auto instance = read_instance(instance_name, experiment_config.use_predefined_start);
+    const auto instance = read_instance(instance_name, experiment_config.start_type);
 
     auto information_collector = build_information_collector(experiment_config.information_collector_type);
 
@@ -46,7 +46,7 @@ void execute_runs(std::string experiment_config_path, std::string instance_name)
             auto objective_function = build_objective_function(experiment_config.objective_function_type, instance);
             auto ea = EA(objective_function, mutation_operator);
             ea.make_initial_individual(instance);
-            for(int generation = 0; generation < experiment_config.generation_count && time(since_start) < time_limit; ++generation) {
+            for(int generation = 0; generation < experiment_config.generations && time(since_start) < time_limit; ++generation) {
                 ea.next_generation();
                 std::lock_guard<std::mutex> l(m);
                 information_collector->generation_snapshot(id, run, generation, ea);

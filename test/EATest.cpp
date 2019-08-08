@@ -18,7 +18,7 @@ public:
     std::shared_ptr<MutationOperator> mutation_operator;
 
     EATest() {
-        instance = read_instance("data/EATest/test.txt",true);
+        instance = read_instance("data/EATest/test.txt", StartType::EMPTY);
         maxcut = build_objective_function(ObjectiveFunctionType::MAXCUT, instance);
         auto config = MutationOperatorConfig{};
         config.id = 0;
