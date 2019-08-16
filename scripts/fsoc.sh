@@ -15,7 +15,7 @@ echo "using output directory: $result_dir"
 
 install -d $result_dir
 mv $config_file $result_dir
-config_basename=`basename $config_file$
+config_basename=`basename $config_file`
 config_file="$result_dir/$config_basename"
 
 for file in `find -L $instance_dir -type f | grep -v .git | grep -v .assignment`
