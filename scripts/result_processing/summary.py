@@ -77,13 +77,13 @@ def read_instance_data(instance, time_limit=None):
             if not algorithm in data:
                 data[algorithm] = {}
             if not run in data[algorithm]:
-                data[algorithm][run] = { 'time' : 0 }
+                data[algorithm][run] = { 'fitness': None, 'time' : 0 }
             fitness = int(float(row['fitness']))
             generation = int(row['generation'])
             time = int(float(row['mutation_time']))
             if time_limit is not None and time > time_limit:
                 continue
-            if data[algorithm][run] is None or data[algorithm][run]['fitness'] < fitness:
+            if data[algorithm][run]['fitness'] is None or data[algorithm][run]['fitness'] < fitness:
                 data[algorithm][run] = {
                         'fitness': fitness,
                         'generation': generation,
