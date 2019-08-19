@@ -27,7 +27,7 @@ def make_subset(to_trim, superset):
     trimm_keys = []
     for key in to_trim:
         if key not in superset:
-            logging.info(f"removing {key}")
+            logging.info("removing" + str(key))
             trimm_keys.append(key)
     for key in trimm_keys:
         to_trim.pop(key)
@@ -85,17 +85,17 @@ def read_instance_data(instance, time_limit=None):
             if not algorithm in data:
                 data[algorithm] = {}
             if not run in data[algorithm]:
-                data[algorithm][run] = { 'fitness': None, 'time' : 0 }
+                data[algorithm][run] = None
             fitness = int(float(row['fitness']))
             generation = int(row['generation'])
             time = int(float(row['mutation_time']))
             if time_limit is not None and time > time_limit:
                 continue
-            if data[algorithm][run]['fitness'] is None or data[algorithm][run]['fitness'] < fitness:
+            if data[algorithm][run] is None or data[algorithm][run]['fitness'] < fitness:
                 data[algorithm][run] = {
                         'fitness': fitness,
                         'generation': generation,
-                        'time': time + data[algorithm][run]['time'] # data is consecutive, thats why this works
+                        'time': time
                 }
     return (instance,data)
 
@@ -107,7 +107,7 @@ def walk_result_dir(result_dir, debug=False, time_limit=None):
                 all_files.append(os.path.join(path,f))
     result_data = {}
     with mp.Pool(2) as p:
-        pool_data = p.map(read_instance_data, all_files, time_limit)
+        pool_data = p.map(read_instance_data, all_files[:5], time_limit)
     result_data = {os.path.splitext(os.path.basename(filename))[0]:data for filename, data in (d for d in pool_data if d is not None)}
     return result_data
         
