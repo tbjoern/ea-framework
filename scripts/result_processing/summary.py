@@ -23,13 +23,21 @@ def get_algorithm_name(algorithm):
     raw_name = algorithm['name']
     return add_params_of_type(algorithm, raw_name)
 
+def make_subset(to_trim, superset):
+    trimm_keys = []
+    for key in to_trim:
+        if key not in superset:
+            logging.info(f"removing {key}")
+            trimm_keys.append(key)
+    for key in trimm_keys:
+        to_trim.pop(key)
+
 def merge_summary(*args):
     merged = args[0]
     for d in args[1:]:
+        make_subset(d, merged)
+        make_subset(merged, d)
         for filename, algo_data in d.items():
-            if filename not in merged:
-                logging.error(str(k) +" not in merged")
-                exit(1)
             for algo, gen_info in algo_data.items():
                 if algo in merged[filename]:
                     logging.error(str(algo) + " exists twice")
@@ -100,7 +108,7 @@ def walk_result_dir(result_dir, debug=False, time_limit=None):
     result_data = {}
     with mp.Pool(2) as p:
         pool_data = p.map(read_instance_data, all_files, time_limit)
-    result_data = {os.path.splitext(filename)[0]:data for filename, data in (d for d in pool_data if d is not None)}
+    result_data = {os.path.splitext(os.path.basename(filename))[0]:data for filename, data in (d for d in pool_data if d is not None)}
     return result_data
         
 def main():
