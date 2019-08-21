@@ -75,28 +75,22 @@ def read_instance_data(instance, time_limit=None):
     logging.info("reading " + instance)
     data = {}
     with open(instance, 'r') as f:
-        reader = csv.DictReader(f)
-        if reader.fieldnames is None:
-            return None
-        reader.fieldnames = [x.strip() for x in reader.fieldnames]
+        reader = csv.reader(f)
+        next(reader) # skip header
         for row in reader:
-            algorithm = int(row['id'])
-            run = int(row['run'])
+            algorithm = int(row[0])
+            run = int(row[1])
             if not algorithm in data:
                 data[algorithm] = {}
             if not run in data[algorithm]:
                 data[algorithm][run] = None
-            fitness = int(float(row['fitness']))
-            generation = int(row['generation'])
-            time = int(float(row['mutation_time']))
+            fitness = int(float(row[3]))
+            generation = int(row[2])
+            time = int(float(row[4]))
             if time_limit is not None and time > time_limit:
                 continue
-            if data[algorithm][run] is None or data[algorithm][run]['fitness'] < fitness:
-                data[algorithm][run] = {
-                        'fitness': fitness,
-                        'generation': generation,
-                        'time': time
-                }
+            if data[algorithm][run] is None or data[algorithm][run][0] < fitness:
+                data[algorithm][run] = [fitness, generation,time]
     return (instance,data)
 
 def walk_result_dir(result_dir, debug=False, time_limit=None):
@@ -106,8 +100,8 @@ def walk_result_dir(result_dir, debug=False, time_limit=None):
             if '.csv' in f:
                 all_files.append(os.path.join(path,f))
     result_data = {}
-    with mp.Pool(2) as p:
-        pool_data = p.map(read_instance_data, all_files[:5], time_limit)
+    with mp.Pool(4) as p:
+        pool_data = p.map(read_instance_data, all_files, time_limit)
     result_data = {os.path.splitext(os.path.basename(filename))[0]:data for filename, data in (d for d in pool_data if d is not None)}
     return result_data
         
