@@ -12,8 +12,6 @@
 #include <memory>
 #include <cassert>
 
-#include <iostream>
-
 namespace {
 
 using namespace eaframework;
@@ -76,7 +74,6 @@ public:
     // first line is always a comment detailing the format
     std::string matrixmarket, matrix, matrix_type, pattern, pattern_type;
     input_file >> matrixmarket >> matrix >> matrix_type >> pattern >> pattern_type;
-    std::cout << matrixmarket << " | " << matrix << " | " << matrix_type << " | " << pattern << " | " << pattern_type << std::endl;
     bool symmetric = (pattern_type == "symmetric");
     assert(matrix_type == "coordinate");
 
@@ -282,6 +279,18 @@ std::shared_ptr<Graph> read_graph(std::string filename) {
 
 int Graph::node_count() const {
   return in_edges.size();
+}
+
+bool Graph::symmetric() const {
+    if (node_count() % 2 != 0) {
+        return false;
+    }
+    for(const auto& edge : edges) {
+        if( ! edgeExists(edge.end, edge.start) ) {
+            return false;
+        }
+    }
+    return true;
 }
 
 }

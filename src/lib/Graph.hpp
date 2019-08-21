@@ -38,6 +38,7 @@ public:
     const Edgepointers& getInEdges(int node) const;
     const Edgelist& getEdges() const;
     int node_count() const;
+    bool symmetric() const;
 };
 
 std::shared_ptr<Graph> read_graph(std::string filename);
