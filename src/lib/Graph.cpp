@@ -82,6 +82,7 @@ public:
       // indices start at 1
       --source; --dest;
       adj_list->addEdge(source, dest, 1);
+      adj_list->addEdge(dest, source, 1);
     }
     return adj_list;
   }
