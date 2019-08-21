@@ -10,6 +10,9 @@
 #include <tuple>
 #include <limits>
 #include <memory>
+#include <cassert>
+
+#include <iostream>
 
 namespace {
 
@@ -70,11 +73,22 @@ class MTXReader : public FileReader {
 public:
   std::shared_ptr<Graph> readFile(std::string filename) override {
     std::ifstream input_file(filename);
-    // first line is always a comment
-    input_file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    // first line is always a comment detailing the format
+    std::string matrixmarket, matrix, matrix_type, pattern, pattern_type;
+    input_file >> matrixmarket >> matrix >> matrix_type >> pattern >> pattern_type;
+    std::cout << matrixmarket << " | " << matrix << " | " << matrix_type << " | " << pattern << " | " << pattern_type << std::endl;
+    bool symmetric = (pattern_type == "symmetric");
+    assert(matrix_type == "coordinate");
+
     int nodes, edge_entries;
     input_file >> nodes >> nodes >> edge_entries;
-    int edges = edge_entries * 2;
+    int edges;
+    if (symmetric) {
+        edges = edge_entries * 2;
+    } else {
+        edges = edge_entries;
+    }
+
     std::shared_ptr<Graph> adj_list = std::make_shared<Graph>(nodes, edges);
 
     for (uint i = 0; i < edge_entries; ++i) {
@@ -83,7 +97,9 @@ public:
       // indices start at 1
       --source; --dest;
       adj_list->addEdge(source, dest, 1);
-      adj_list->addEdge(dest, source, 1);
+      if(symmetric) {
+          adj_list->addEdge(dest, source, 1);
+      }
     }
     return adj_list;
   }

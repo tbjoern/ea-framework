@@ -45,9 +45,16 @@ TEST(Graph, ReadsEdgelist) {
     EXPECT_EQ(graph->getOutEdges(1).front()->weight, 3);
 }
 
-TEST(Graph, ReadsMTX) {
-    auto graph = read_graph("data/test.mtx");
+TEST(Graph, ReadsSymmetricMTX) {
+    auto graph = read_graph("data/test-symmetric.mtx");
     validate_graph(graph);
+    EXPECT_EQ(graph->getEdges().size(), 8);
+}
+
+TEST(Graph, ReadsGeneralMTX) {
+    auto graph = read_graph("data/test-general.mtx");
+    validate_graph(graph);
+    EXPECT_EQ(graph->getEdges().size(), 4);
 }
 
 TEST(Graph, ReadsNXEdgelist) {
