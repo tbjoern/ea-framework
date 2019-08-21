@@ -72,11 +72,12 @@ public:
     std::ifstream input_file(filename);
     // first line is always a comment
     input_file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    int nodes, edges;
-    input_file >> nodes >> nodes >> edges;
+    int nodes, edge_entries;
+    input_file >> nodes >> nodes >> edge_entries;
+    int edges = edge_entries * 2;
     std::shared_ptr<Graph> adj_list = std::make_shared<Graph>(nodes, edges);
 
-    for (uint i = 0; i < edges; ++i) {
+    for (uint i = 0; i < edge_entries; ++i) {
       int source, dest;
       input_file >> source >> dest;
       // indices start at 1
