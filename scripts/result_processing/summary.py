@@ -44,12 +44,12 @@ def merge_summary(*args):
                 merged[filename][algo] = gen_info
     return merged
 
-def get_summaries_and_configs(dirs):
+def get_summaries_and_configs(dirs, summaryname="summary.json"):
     summaries = []
     configs = []
     for d in dirs:
         config_path = os.path.join(d, d + '.json')
-        summary_path = os.path.join(d, 'summary.json')
+        summary_path = os.path.join(d, summaryname)
         with open(config_path, 'r') as c:
             config = json.load(c)
         with open(summary_path, 'r') as s:
