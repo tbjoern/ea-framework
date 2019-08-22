@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include <Instance.hpp>
 #include <Individual.hpp>
+#include <ObjectiveFunction.hpp>
 #include <Graph.hpp>
 
 using namespace eaframework;
@@ -29,7 +30,7 @@ TEST(Instance, ReadsEmptyAssignment) {
 }
 
 TEST(Instance, ReadsInstanceWithRandomStartAssignment) {
-    auto instance = read_instance("data/test.txt", StartType::RANDOM);
+    auto instance = read_instance("data/test.txt", StartType::RANDOM, ObjectiveFunctionType::MAXDICUT);
 
     ASSERT_EQ(instance.graph->node_count(), 4);
 
@@ -39,7 +40,7 @@ TEST(Instance, ReadsInstanceWithRandomStartAssignment) {
 }
 
 TEST(Instance, ReadsInstanceWithoutStartAssignment) {
-    auto instance = read_instance("data/test.txt", StartType::EMPTY);
+    auto instance = read_instance("data/test.txt", StartType::EMPTY, ObjectiveFunctionType::MAXDICUT);
 
     ASSERT_EQ(instance.graph->node_count(), 4);
 
@@ -49,7 +50,7 @@ TEST(Instance, ReadsInstanceWithoutStartAssignment) {
 }
 
 TEST(Instance, ReadsInstanceWithFullStartAssignment) {
-    auto instance = read_instance("data/test.txt", StartType::FULL);
+    auto instance = read_instance("data/test.txt", StartType::FULL, ObjectiveFunctionType::MAXDICUT);
 
     ASSERT_EQ(instance.graph->node_count(), 4);
 

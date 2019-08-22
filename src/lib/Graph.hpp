@@ -39,9 +39,11 @@ public:
     const Edgelist& getEdges() const;
     int node_count() const;
     bool symmetric() const;
+	std::shared_ptr<Graph> as_symmetric_graph() const;
 };
 
 std::shared_ptr<Graph> read_graph(std::string filename);
 std::shared_ptr<Graph> read_graph(std::string basename, std::string extension);
+std::shared_ptr<Graph> read_graph(std::string basename, std::string extension, bool directed);
 
 }

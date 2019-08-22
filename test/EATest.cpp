@@ -18,8 +18,8 @@ public:
     std::shared_ptr<MutationOperator> mutation_operator;
 
     EATest() {
-        instance = read_instance("data/EATest/test.txt", StartType::EMPTY);
-        maxcut = build_objective_function(ObjectiveFunctionType::MAXCUT, instance);
+        instance = read_instance("data/EATest/test.txt", StartType::EMPTY, ObjectiveFunctionType::MAXDICUT);
+        maxcut = build_objective_function(ObjectiveFunctionType::MAXDICUT, instance);
         auto config = MutationOperatorConfig{};
         config.id = 0;
         config.type = MutationOperatorType::DEFAULT;
@@ -51,8 +51,8 @@ TEST_F(EATest, UpdatesFitnessValues) {
     ea.make_initial_individual(instance);
     EXPECT_EQ(ea.getBestFitness(), 0);
     ea.next_generation();
-    EXPECT_EQ(ea.getBestFitness(), 4);
-    EXPECT_EQ(ea.getOffspringFitness(), 4);
+    EXPECT_EQ(ea.getBestFitness(), 3);
+    EXPECT_EQ(ea.getOffspringFitness(), 3);
     EXPECT_TRUE(ea.generationImproved());
 
     auto individual = ea.getBestIndividual();

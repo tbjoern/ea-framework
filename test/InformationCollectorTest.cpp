@@ -22,7 +22,7 @@ public:
     std::unique_ptr<EA> ea;
 
     InformationCollectorTest() {
-        instance = read_instance("data/InformationCollectorTest/test.txt", StartType::RANDOM);
+        instance = read_instance("data/InformationCollectorTest/test.txt", StartType::RANDOM, ObjectiveFunctionType::MAXCUT);
         maxcut = build_objective_function(ObjectiveFunctionType::MAXCUT, instance);
         auto config = MutationOperatorConfig{};
         config.id = 0;

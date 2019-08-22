@@ -179,7 +179,7 @@ public:
   }
 };
 
-std::shared_ptr<Graph> read_graph_impl(std::string basename, std::string extension) {
+std::shared_ptr<Graph> read_graph_impl(std::string basename, std::string extension, bool directed) {
     FileReader *reader;
     if(filename_map.count(extension) == 0) {
         throw std::runtime_error("Unkown file extension " + extension + " of file " + basename + extension);
@@ -204,6 +204,10 @@ std::shared_ptr<Graph> read_graph_impl(std::string basename, std::string extensi
     }
     std::shared_ptr<Graph> adj_list = reader->readFile(basename + extension);
     delete reader;
+
+	if(!directed && !adj_list->symmetric()) {
+		adj_list = adj_list->as_symmetric_graph();
+	}
 
     return adj_list;
 }
@@ -265,10 +269,14 @@ const Edgelist& Graph::getEdges() const {
   return edges;
 }
 
-std::shared_ptr<Graph> read_graph(std::string basename, std::string extension) {
-    auto graph = ::read_graph_impl(basename, extension);
+std::shared_ptr<Graph> read_graph(std::string basename, std::string extension, bool directed) {
+    auto graph = ::read_graph_impl(basename, extension, directed);
 
     return graph;
+}
+
+std::shared_ptr<Graph> read_graph(std::string basename, std::string extension) {
+    return read_graph(basename, extension, true);
 }
 
 std::shared_ptr<Graph> read_graph(std::string filename) {
@@ -292,5 +300,42 @@ bool Graph::symmetric() const {
     }
     return true;
 }
+
+std::shared_ptr<Graph> Graph::as_symmetric_graph() const {
+    int new_edge_count = edges.size();
+    for(const auto& edge : edges) {
+        if( ! edgeExists(edge.end, edge.start) ) {
+				new_edge_count += 1;
+        }
+    }
+
+	auto graph = std::make_shared<Graph>(node_count(), new_edge_count);
+    for(const auto& edge : edges) {
+		graph->addEdge(edge.start, edge.end, edge.weight);
+        if( ! edgeExists(edge.end, edge.start) ) {
+				graph->addEdge(edge.end, edge.start, edge.weight);
+        }
+    }
+
+    for(const auto& edge : edges) {
+        if( edgeExists(edge.end, edge.start) ) {
+			const auto& opposite_edges = out_edges[edge.end];
+            Edge* opposite_edge;
+            for ( auto opp : opposite_edges ) {
+                if (opp->end == edge.start) {
+                    opposite_edge = opp;
+                }
+            }
+			if( edge.weight != opposite_edge->weight ) {
+				int new_weight = edge.weight + opposite_edge->weight;
+				graph->updateEdge(edge.start, edge.end, new_weight);
+				graph->updateEdge(edge.end, edge.start, new_weight);
+			}
+        }
+    }
+
+	return graph;
+}
+
 
 }

@@ -62,4 +62,11 @@ TEST(Graph, ReadsNXEdgelist) {
     validate_graph(graph);
 }
 
+TEST(Graph, AsSymmetricMakesGeneralMTXSymmetric) {
+    auto graph = read_graph("data/test-general.mtx");
+    graph = graph->as_symmetric_graph();
+    validate_graph(graph);
+    EXPECT_EQ(graph->getEdges().size(), 8);
+}
+
 }

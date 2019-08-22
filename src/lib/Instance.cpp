@@ -4,6 +4,7 @@
 
 #include <Graph.hpp>
 #include <Individual.hpp>
+#include <ObjectiveFunction.hpp>
 #include <fstream>
 #include <tuple>
 
@@ -35,11 +36,16 @@ std::shared_ptr<Individual> read_start_assignment(std::string filename) {
     return individual;
 }
 
-Instance read_instance(std::string instance_name, StartType start_type) {
+Instance read_instance(std::string instance_name, StartType start_type, ObjectiveFunctionType obj_func) {
     std::string basename, extension;
     std::tie(basename, extension) = split_filename(instance_name);
 
-    auto graph = read_graph(basename, extension);
+    bool directed = true;
+    if(obj_func == ObjectiveFunctionType::MAXCUT) {
+        directed = false;
+    }
+
+    auto graph = read_graph(basename, extension, directed);
     std::shared_ptr<Individual> start_assignment;
     switch(start_type) {
         case StartType::EMPTY:

@@ -6,6 +6,7 @@
 namespace eaframework {
 
 class Graph;
+enum class ObjectiveFunctionType;
 enum class StartType {
     EMPTY = 0,
     RANDOM = 1,
@@ -20,6 +21,6 @@ struct Instance {
 };
 
 std::shared_ptr<Individual> read_start_assignment(std::string filename);
-Instance read_instance(std::string instance_name, StartType start_type);
+Instance read_instance(std::string instance_name, StartType start_type, ObjectiveFunctionType obj_type);
 
 }
