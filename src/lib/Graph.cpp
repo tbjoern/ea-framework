@@ -75,6 +75,7 @@ public:
     std::string matrixmarket, matrix, matrix_type, pattern, pattern_type;
     input_file >> matrixmarket >> matrix >> matrix_type >> pattern >> pattern_type;
     bool symmetric = (pattern_type == "symmetric");
+    std::cout << "symmetric: " << symmetric << " pattern_type: " << pattern_type << std::endl;
     assert(matrix_type == "coordinate");
 
     int nodes, edge_entries;
@@ -282,7 +283,7 @@ int Graph::node_count() const {
 }
 
 bool Graph::symmetric() const {
-    if (node_count() % 2 != 0) {
+    if (edges.size() % 2 != 0) {
         return false;
     }
     for(const auto& edge : edges) {
