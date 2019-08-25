@@ -32,7 +32,7 @@ def main():
     id_name_map = input["id_name_map"]
     max_id = max([int(x) for x in id_name_map.keys()])
 
-    if opt is not None:
+    if args.opt is not None:
         max_id += 1
         for instance in avg_fitness:
             avg_fitness[instance][max_id] = opt[instance] * 2

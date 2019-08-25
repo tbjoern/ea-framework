@@ -38,6 +38,8 @@ def main():
 
     sorted_average_ranks = sorted(average_ranks.items(), key=lambda x: x[1])
     for name, rank in sorted_average_ranks:
+        if 'greedy' in name:
+            continue
         print(f"{name}:{rank:.2f}")
     
 
