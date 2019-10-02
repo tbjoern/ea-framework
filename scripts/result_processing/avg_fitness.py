@@ -3,7 +3,7 @@
 from summary import get_summaries_and_configs, id_name_map_from_configs, merge_summary
 from os.path import basename
 
-def avg_fitness(summary):
+def avg_fitness(summary, id_name_map):
     summary_avg_fitness = {}
     for instance, algo_data in summary.items():
         if len(algo_data) == 0:
@@ -16,7 +16,7 @@ def avg_fitness(summary):
                 avg_fitness += data[0]
                 data_points += 1
             avg_fitness /= data_points
-            summary_avg_fitness[instance][id] = avg_fitness
+            summary_avg_fitness[instance][id_name_map[int(id)]] = avg_fitness / 2
     return summary_avg_fitness
 
 def select(include, summary):
@@ -48,15 +48,11 @@ def main():
     if args.include is not None:
         select(args.include, summary)
 
-    summary_avg_fitness = avg_fitness(summary)
-
     id_name_map = id_name_map_from_configs(configs)
-
-    output = { 'avg_fitness': summary_avg_fitness, 'id_name_map': id_name_map }
-
-    json.dump(output, sys.stdout)
     
+    summary_avg_fitness = avg_fitness(summary, id_name_map)
 
+    json.dump(summary_avg_fitness, sys.stdout)
 
 if __name__ == '__main__':
     main()
